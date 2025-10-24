@@ -1,0 +1,725 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Notification Engine Dashboard</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f5f5f5;
+            color: #333;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 2rem;
+            text-align: center;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+        
+        .card {
+            background: white;
+            border-radius: 10px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: transform 0.2s;
+        }
+        
+        .card:hover {
+            transform: translateY(-2px);
+        }
+        
+        .card h3 {
+            color: #667eea;
+            margin-bottom: 1rem;
+            border-bottom: 2px solid #eee;
+            padding-bottom: 0.5rem;
+        }
+        
+        .btn {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: background 0.2s;
+            margin: 0.5rem 0.5rem 0.5rem 0;
+        }
+        
+        .btn:hover {
+            background: #5a6fd8;
+        }
+        
+        .btn-danger {
+            background: #e74c3c;
+        }
+        
+        .btn-danger:hover {
+            background: #c0392b;
+        }
+        
+        .btn-success {
+            background: #27ae60;
+        }
+        
+        .btn-success:hover {
+            background: #229954;
+        }
+        
+        .notification-item {
+            background: #f8f9fa;
+            border-left: 4px solid #667eea;
+            padding: 1rem;
+            margin: 0.5rem 0;
+            border-radius: 0 5px 5px 0;
+        }
+        
+        .priority-high {
+            border-left-color: #e74c3c;
+        }
+        
+        .priority-medium {
+            border-left-color: #f39c12;
+        }
+        
+        .priority-low {
+            border-left-color: #27ae60;
+        }
+        
+        .loading {
+            text-align: center;
+            padding: 2rem;
+            color: #666;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+        
+        .stat-card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 8px;
+            text-align: center;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        
+        .stat-number {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #667eea;
+        }
+        
+        .stat-label {
+            color: #666;
+            margin-top: 0.5rem;
+        }
+        
+        .quick-actions {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+        
+        .quick-actions h3 {
+            color: #667eea;
+            margin-bottom: 1rem;
+        }
+        
+        .actions-row {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 1rem;
+        }
+        
+        .chart-container {
+            position: relative;
+            height: 300px;
+            margin-top: 1rem;
+        }
+        
+        .chart-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+        
+        .chart-card {
+            background: white;
+            border-radius: 10px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        .chart-card h3 {
+            color: #667eea;
+            margin-bottom: 1rem;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>Smart Notification Engine</h1>
+        <p>Energy Supplier Customer Notification Dashboard</p>
+    </div>
+    
+    <div class="container">
+        <!-- Quick Actions at the top -->
+        <div class="quick-actions">
+            <h3>Quick Actions</h3>
+            <div class="actions-row">
+                <button class="btn" onclick="generateNotifications()">Generate Notifications</button>
+                <button class="btn btn-success" onclick="loadCustomerData()">Refresh CSV Data</button>
+                <button class="btn" onclick="viewSegments()">View Segments</button>
+                <button class="btn btn-danger" onclick="viewBillingIssues()">View Billing Issues</button>
+            </div>
+        </div>
+        
+        <!-- Stats Grid -->
+        <div class="stats-grid" id="statsGrid">
+            <div class="stat-card">
+                <div class="stat-number" id="totalCustomers">-</div>
+                <div class="stat-label">Total Customers</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="billingIssues">-</div>
+                <div class="stat-label">Billing Issues</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="pendingNotifications">0</div>
+                <div class="stat-label">Pending Notifications</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="avgEnergyUsage">-</div>
+                <div class="stat-label">Avg Daily Energy (kWh)</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="valueSeekers">-</div>
+                <div class="stat-label">Value Seekers</div>
+            </div>
+        </div>
+        
+        <!-- Charts Section -->
+        <div class="chart-grid">
+            <div class="chart-card">
+                <h3>Customer Segments Distribution</h3>
+                <div class="chart-container">
+                    <canvas id="segmentChart"></canvas>
+                </div>
+            </div>
+            
+            <div class="chart-card">
+                <h3>Energy Usage by Segment</h3>
+                <div class="chart-container">
+                    <canvas id="energyChart"></canvas>
+                </div>
+            </div>
+            
+            <div class="chart-card">
+                <h3>Billing Issues Overview</h3>
+                <div class="chart-container">
+                    <canvas id="billingChart"></canvas>
+                </div>
+            </div>
+            
+            <div class="chart-card">
+                <h3>Solar/EV Ownership Distribution</h3>
+                <div class="chart-container">
+                    <canvas id="ownershipChart"></canvas>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Value Seekers Focus Section -->
+        <div class="card" style="margin-bottom: 2rem; border: 2px solid #f39c12;">
+            <h3 style="color: #f39c12;">🎯 Value Seekers Insights (Target Segment)</h3>
+            <div id="valueSeekerData" class="loading">Loading Value Seekers analysis...</div>
+        </div>
+        
+        <div class="dashboard-grid">
+            
+            <div class="card">
+                <h3>Customer Segments</h3>
+                <div id="segmentData" class="loading">Loading segments...</div>
+            </div>
+            
+            <div class="card">
+                <h3>Recent Notifications</h3>
+                <div id="notificationData" class="loading">Click "Generate Notifications" to see notifications</div>
+            </div>
+            
+            <div class="card">
+                <h3>Billing Issues</h3>
+                <div id="billingData" class="loading">Loading billing issues...</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Chart instances
+        let segmentChart, energyChart, billingChart, ownershipChart;
+        
+        // Load initial data
+        document.addEventListener('DOMContentLoaded', function() {
+            loadStats();
+            loadSegments();
+            loadBillingIssues();
+            loadValueSeekers();
+            loadCharts();
+        });
+
+        async function loadStats() {
+            try {
+                const customersResponse = await fetch('/api/customers');
+                const customers = await customersResponse.json();
+                
+                const billingResponse = await fetch('/api/billing-issues');
+                const billingIssues = await billingResponse.json();
+                
+                // Calculate average energy usage
+                const avgEnergy = customers.reduce((sum, customer) => sum + customer.Daily_Energy_Usage_kWh, 0) / customers.length;
+                
+                // Count Value Seekers
+                const valueSeekerCount = customers.filter(customer => customer.Segment === 'Value Seekers').length;
+                
+                document.getElementById('totalCustomers').textContent = customers.length;
+                document.getElementById('billingIssues').textContent = billingIssues.length;
+                document.getElementById('avgEnergyUsage').textContent = avgEnergy.toFixed(1);
+                document.getElementById('valueSeekers').textContent = valueSeekerCount;
+            } catch (error) {
+                console.error('Error loading stats:', error);
+                document.getElementById('totalCustomers').textContent = 'Error';
+                document.getElementById('billingIssues').textContent = 'Error';
+                document.getElementById('avgEnergyUsage').textContent = 'Error';
+                document.getElementById('valueSeekers').textContent = 'Error';
+            }
+        }
+
+        async function loadSegments() {
+            try {
+                const response = await fetch('/api/segments');
+                const segments = await response.json();
+                
+                let html = '';
+                for (const [segment, data] of Object.entries(segments)) {
+                    html += `
+                        <div style="margin-bottom: 1rem; padding: 0.5rem; background: #f8f9fa; border-radius: 5px;">
+                            <strong>${segment}</strong><br>
+                            <small>Customers: ${data.Customer_ID} | Avg Energy: ${data.Daily_Energy_Usage_kWh} kWh</small>
+                        </div>
+                    `;
+                }
+                
+                document.getElementById('segmentData').innerHTML = html;
+            } catch (error) {
+                document.getElementById('segmentData').innerHTML = 'Error loading segments';
+                console.error('Error:', error);
+            }
+        }
+
+        async function loadBillingIssues() {
+            try {
+                const response = await fetch('/api/billing-issues');
+                const issues = await response.json();
+                
+                let html = '';
+                issues.slice(0, 5).forEach(issue => {
+                    html += `
+                        <div style="margin-bottom: 0.5rem; padding: 0.5rem; background: #fff3cd; border-radius: 3px;">
+                            <strong>Customer ${issue.Customer_ID}</strong><br>
+                            <small>${issue.Billing_Anomaly} - ${issue.Segment}</small>
+                        </div>
+                    `;
+                });
+                
+                if (issues.length === 0) {
+                    html = '<p>No billing issues found</p>';
+                }
+                
+                document.getElementById('billingData').innerHTML = html;
+            } catch (error) {
+                document.getElementById('billingData').innerHTML = 'Error loading billing issues';
+                console.error('Error:', error);
+            }
+        }
+
+        async function generateNotifications() {
+            document.getElementById('notificationData').innerHTML = '<div class="loading">Generating notifications...</div>';
+            
+            try {
+                const response = await fetch('/api/notifications');
+                const notifications = await response.json();
+                
+                let html = '';
+                notifications.forEach(notification => {
+                    html += `
+                        <div class="notification-item priority-${notification.priority}">
+                            <strong>Customer ${notification.customer_id}</strong> (${notification.segment})<br>
+                            <small>${notification.message}</small><br>
+                            <small style="color: #666;">Channel: ${notification.channel} | Priority: ${notification.priority}</small>
+                            <button class="btn" style="margin-top: 0.5rem; padding: 0.25rem 0.5rem; font-size: 0.8rem;" 
+                                    onclick="sendNotification(${notification.customer_id}, '${notification.message}', '${notification.channel}')">
+                                Send
+                            </button>
+                        </div>
+                    `;
+                });
+                
+                if (notifications.length === 0) {
+                    html = '<p>No notifications to generate</p>';
+                }
+                
+                document.getElementById('notificationData').innerHTML = html;
+                document.getElementById('pendingNotifications').textContent = notifications.length;
+            } catch (error) {
+                document.getElementById('notificationData').innerHTML = 'Error generating notifications';
+                console.error('Error:', error);
+            }
+        }
+
+        async function sendNotification(customerId, message, channel) {
+            try {
+                const response = await fetch('/api/send-notification', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        customer_id: customerId,
+                        message: message,
+                        channel: channel
+                    })
+                });
+                
+                const result = await response.json();
+                alert(`Notification sent to customer ${customerId} via ${channel}`);
+            } catch (error) {
+                alert('Error sending notification');
+                console.error('Error:', error);
+            }
+        }
+
+        async function loadCustomerData() {
+            try {
+                // Show loading state
+                document.getElementById('segmentData').innerHTML = '<div class="loading">Refreshing data...</div>';
+                document.getElementById('billingData').innerHTML = '<div class="loading">Refreshing data...</div>';
+                
+                // Call the refresh endpoint to reload CSV data
+                const refreshResponse = await fetch('/api/refresh-data', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    }
+                });
+                
+                const refreshResult = await refreshResponse.json();
+                
+                if (refreshResult.status === 'success') {
+                    // Reload all dashboard data
+                    await loadStats();
+                    await loadSegments();
+                    await loadBillingIssues();
+                    await loadValueSeekers();
+                    await loadCharts();
+                    
+                    // Clear any existing notifications
+                    document.getElementById('notificationData').innerHTML = 'Click "Generate Notifications" to see notifications';
+                    document.getElementById('pendingNotifications').textContent = '0';
+                    
+                    alert(`Data refreshed successfully! Loaded ${refreshResult.total_customers} customers.`);
+                } else {
+                    alert(`Error refreshing data: ${refreshResult.message}`);
+                }
+            } catch (error) {
+                alert('Error refreshing data. Please try again.');
+                console.error('Error:', error);
+                
+                // Restore loading state on error
+                document.getElementById('segmentData').innerHTML = 'Error loading segments';
+                document.getElementById('billingData').innerHTML = 'Error loading billing issues';
+            }
+        }
+
+        function viewSegments() {
+            loadSegments();
+        }
+
+        function viewBillingIssues() {
+            loadBillingIssues();
+        }
+
+        async function loadValueSeekers() {
+            try {
+                const response = await fetch('/api/value-seekers');
+                const data = await response.json();
+                
+                let html = `
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-bottom: 1rem;">
+                        <div style="background: #fff3cd; padding: 1rem; border-radius: 5px; text-align: center;">
+                            <strong style="font-size: 1.5rem; color: #f39c12;">${data.total_count}</strong><br>
+                            <small>Total Value Seekers</small>
+                        </div>
+                        <div style="background: #d4edda; padding: 1rem; border-radius: 5px; text-align: center;">
+                            <strong style="font-size: 1.5rem; color: #28a745;">${data.avg_daily_energy}</strong><br>
+                            <small>Avg Daily Energy (kWh)</small>
+                        </div>
+                        <div style="background: #d1ecf1; padding: 1rem; border-radius: 5px; text-align: center;">
+                            <strong style="font-size: 1.5rem; color: #17a2b8;">${data.avg_campaign_clicks}</strong><br>
+                            <small>Avg Campaign Clicks</small>
+                        </div>
+                    </div>
+                    
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                        <div>
+                            <h4 style="color: #f39c12; margin-bottom: 0.5rem;">Solar/EV Ownership:</h4>
+                `;
+                
+                for (const [ownership, count] of Object.entries(data.solar_ev_breakdown)) {
+                    html += `<div style="margin-bottom: 0.25rem;">• ${ownership}: ${count} customers</div>`;
+                }
+                
+                html += `
+                        </div>
+                        <div>
+                            <h4 style="color: #f39c12; margin-bottom: 0.5rem;">Billing Issues:</h4>
+                `;
+                
+                for (const [issue, count] of Object.entries(data.billing_issues)) {
+                    html += `<div style="margin-bottom: 0.25rem;">• ${issue}: ${count} customers</div>`;
+                }
+                
+                html += `
+                        </div>
+                    </div>
+                    
+                    <div style="margin-top: 1rem; padding: 1rem; background: #f8f9fa; border-radius: 5px;">
+                        <h4 style="color: #f39c12; margin-bottom: 0.5rem;">Key Insights:</h4>
+                        <ul style="margin-left: 1rem;">
+                            <li>Value Seekers represent ${((data.total_count / 20) * 100).toFixed(1)}% of your customer base</li>
+                            <li>Their average energy usage is ${data.avg_daily_energy} kWh/day</li>
+                            <li>Campaign engagement: ${data.avg_campaign_clicks} clicks, ${data.avg_campaign_opens} opens on average</li>
+                            <li>Most common regions: ${Object.keys(data.regions).slice(0, 2).join(', ')}</li>
+                        </ul>
+                    </div>
+                `;
+                
+                document.getElementById('valueSeekerData').innerHTML = html;
+            } catch (error) {
+                document.getElementById('valueSeekerData').innerHTML = 'Error loading Value Seekers data';
+                console.error('Error:', error);
+            }
+        }
+
+        async function loadCharts() {
+            try {
+                const customersResponse = await fetch('/api/customers');
+                const customers = await customersResponse.json();
+                
+                const segmentsResponse = await fetch('/api/segments');
+                const segments = await segmentsResponse.json();
+                
+                // Create charts
+                createSegmentChart(segments);
+                createEnergyChart(segments);
+                createBillingChart(customers);
+                createOwnershipChart(customers);
+            } catch (error) {
+                console.error('Error loading charts:', error);
+            }
+        }
+
+        function createSegmentChart(segments) {
+            const ctx = document.getElementById('segmentChart').getContext('2d');
+            
+            if (segmentChart) {
+                segmentChart.destroy();
+            }
+            
+            const labels = Object.keys(segments);
+            const data = Object.values(segments).map(s => s.Customer_ID);
+            
+            segmentChart = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        data: data,
+                        backgroundColor: [
+                            '#667eea',
+                            '#764ba2',
+                            '#f093fb',
+                            '#f5576c'
+                        ],
+                        borderWidth: 2,
+                        borderColor: '#fff'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom'
+                        }
+                    }
+                }
+            });
+        }
+
+        function createEnergyChart(segments) {
+            const ctx = document.getElementById('energyChart').getContext('2d');
+            
+            if (energyChart) {
+                energyChart.destroy();
+            }
+            
+            const labels = Object.keys(segments);
+            const data = Object.values(segments).map(s => s.Daily_Energy_Usage_kWh);
+            
+            energyChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Avg Daily Energy Usage (kWh)',
+                        data: data,
+                        backgroundColor: 'rgba(102, 126, 234, 0.8)',
+                        borderColor: 'rgba(102, 126, 234, 1)',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+        }
+
+        function createBillingChart(customers) {
+            const ctx = document.getElementById('billingChart').getContext('2d');
+            
+            if (billingChart) {
+                billingChart.destroy();
+            }
+            
+            const billingCounts = customers.reduce((acc, customer) => {
+                const anomaly = customer.Billing_Anomaly || 'None';
+                acc[anomaly] = (acc[anomaly] || 0) + 1;
+                return acc;
+            }, {});
+            
+            const labels = Object.keys(billingCounts);
+            const data = Object.values(billingCounts);
+            
+            billingChart = new Chart(ctx, {
+                type: 'pie',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        data: data,
+                        backgroundColor: [
+                            '#27ae60',
+                            '#e74c3c',
+                            '#f39c12',
+                            '#9b59b6'
+                        ],
+                        borderWidth: 2,
+                        borderColor: '#fff'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom'
+                        }
+                    }
+                }
+            });
+        }
+
+        function createOwnershipChart(customers) {
+            const ctx = document.getElementById('ownershipChart').getContext('2d');
+            
+            if (ownershipChart) {
+                ownershipChart.destroy();
+            }
+            
+            const ownershipCounts = customers.reduce((acc, customer) => {
+                const ownership = customer.Solar_EV_Ownership || 'None';
+                acc[ownership] = (acc[ownership] || 0) + 1;
+                return acc;
+            }, {});
+            
+            const labels = Object.keys(ownershipCounts);
+            const data = Object.values(ownershipCounts);
+            
+            ownershipChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Number of Customers',
+                        data: data,
+                        backgroundColor: [
+                            '#3498db',
+                            '#2ecc71',
+                            '#e67e22',
+                            '#95a5a6'
+                        ],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+        }
+    </script>
+</body>
+</html>
