@@ -1,18 +1,349 @@
 from flask import Flask, render_template, jsonify, request
 import pandas as pd
+import numpy as np
 import os
 from datetime import datetime
+import json
+import boto3
+from botocore.exceptions import ClientError
 
 app = Flask(__name__)
+
+class BedrockNotificationGenerator:
+    def __init__(self):
+        """Initialize Bedrock client"""
+        try:
+            self.bedrock_client = boto3.client(
+                'bedrock-runtime',
+                region_name='us-east-1'  # Change to your preferred region
+            )
+            self.model_id = "anthropic.claude-3-sonnet-20240229-v1:0"  # Using Claude 3 Sonnet
+        except Exception as e:
+            print(f"Warning: Could not initialize Bedrock client: {e}")
+            self.bedrock_client = None
+    
+    def analyze_customer_priority(self, customer_data, context_data=None):
+        """Use AI to determine customer contact priority and strategy"""
+        if not self.bedrock_client:
+            return self._fallback_priority_analysis(customer_data)
+        
+        try:
+            prompt = self._build_priority_prompt(customer_data, context_data)
+            
+            body = json.dumps({
+                "anthropic_version": "bedrock-2023-05-31",
+                "max_tokens": 300,
+                "messages": [
+                    {
+                        "role": "user",
+                        "content": prompt
+                    }
+                ]
+            })
+            
+            response = self.bedrock_client.invoke_model(
+                modelId=self.model_id,
+                body=body
+            )
+            
+            response_body = json.loads(response['body'].read())
+            ai_response = response_body['content'][0]['text'].strip()
+            
+            return self._parse_priority_response(ai_response)
+            
+        except Exception as e:
+            print(f"Priority analysis error: {e}")
+            return self._fallback_priority_analysis(customer_data)
+    
+    def _build_priority_prompt(self, customer_data, context_data):
+        """Build prompt for AI priority analysis"""
+        segment = customer_data.get('Segment', 'Unknown')
+        energy_usage = customer_data.get('Daily_Energy_Usage_kWh', 0)
+        seasonal_usage = customer_data.get('Seasonal_Energy_Usage_kWh', 0)
+        solar_ev = customer_data.get('Solar_EV_Ownership', 'None')
+        billing_anomaly = customer_data.get('Billing_Anomaly', 'None')
+        campaign_clicks = customer_data.get('Campaign_Clicks', 0)
+        campaign_opens = customer_data.get('Campaign_Opens', 0)
+        support_issue = customer_data.get('Support_Ticket_Issue', 'None')
+        region = customer_data.get('Region', 'Unknown')
+        
+        prompt = f"""
+You are an AI customer engagement strategist for an energy supplier. Analyze this customer profile and determine the optimal contact strategy.
+
+Customer Profile:
+- Segment: {segment}
+- Daily Energy Usage: {energy_usage} kWh
+- Seasonal Energy Usage: {seasonal_usage} kWh
+- Solar/EV Ownership: {solar_ev}
+- Billing Anomaly: {billing_anomaly}
+- Campaign Engagement: {campaign_clicks} clicks, {campaign_opens} opens
+- Recent Support Issue: {support_issue}
+- Region: {region}
+
+Context: {context_data or 'General customer analysis'}
+
+Analyze this customer and provide your recommendation in this EXACT format:
+
+PRIORITY: [HIGH/MEDIUM/LOW]
+URGENCY: [IMMEDIATE/WITHIN_24H/WITHIN_WEEK/ROUTINE]
+CHANNEL: [email_sms/email/sms/app_notification/phone_call]
+REASON: [Brief explanation of why this priority/urgency]
+CONTACT_STRATEGY: [Specific approach recommendation]
+RISK_SCORE: [1-10 scale where 10 is highest risk of churn/dissatisfaction]
+
+Consider factors like:
+- Billing issues require immediate attention
+- High energy users may need efficiency advice
+- Low engagement customers need re-engagement
+- Value Seekers respond to cost-saving opportunities
+- Support issues indicate potential dissatisfaction
+"""
+        
+        return prompt
+    
+    def _parse_priority_response(self, ai_response):
+        """Parse AI response into structured data"""
+        try:
+            lines = ai_response.strip().split('\n')
+            result = {
+                'priority': 'medium',
+                'urgency': 'routine',
+                'channel': 'email',
+                'reason': 'AI analysis completed',
+                'contact_strategy': 'Standard engagement approach',
+                'risk_score': 5
+            }
+            
+            for line in lines:
+                if ':' in line:
+                    key, value = line.split(':', 1)
+                    key = key.strip().lower()
+                    value = value.strip()
+                    
+                    if 'priority' in key:
+                        result['priority'] = value.lower()
+                    elif 'urgency' in key:
+                        result['urgency'] = value.lower()
+                    elif 'channel' in key:
+                        result['channel'] = value.lower()
+                    elif 'reason' in key:
+                        result['reason'] = value
+                    elif 'contact_strategy' in key:
+                        result['contact_strategy'] = value
+                    elif 'risk_score' in key:
+                        try:
+                            result['risk_score'] = int(value.split()[0])
+                        except:
+                            result['risk_score'] = 5
+            
+            return result
+            
+        except Exception as e:
+            print(f"Error parsing AI response: {e}")
+            return self._fallback_priority_analysis({})
+    
+    def _fallback_priority_analysis(self, customer_data):
+        """Fallback priority analysis when AI is unavailable"""
+        billing_anomaly = customer_data.get('Billing_Anomaly', 'None')
+        energy_usage = customer_data.get('Daily_Energy_Usage_kWh', 0)
+        campaign_clicks = customer_data.get('Campaign_Clicks', 0)
+        
+        if billing_anomaly != 'None':
+            return {
+                'priority': 'high',
+                'urgency': 'immediate',
+                'channel': 'email_sms',
+                'reason': f'Billing issue: {billing_anomaly}',
+                'contact_strategy': 'Address billing concern immediately',
+                'risk_score': 8
+            }
+        elif energy_usage > 30:
+            return {
+                'priority': 'medium',
+                'urgency': 'within_week',
+                'channel': 'email',
+                'reason': 'High energy usage detected',
+                'contact_strategy': 'Provide energy efficiency recommendations',
+                'risk_score': 4
+            }
+        elif campaign_clicks < 2:
+            return {
+                'priority': 'low',
+                'urgency': 'routine',
+                'channel': 'app_notification',
+                'reason': 'Low engagement detected',
+                'contact_strategy': 'Re-engagement campaign',
+                'risk_score': 6
+            }
+        else:
+            return {
+                'priority': 'low',
+                'urgency': 'routine',
+                'channel': 'email',
+                'reason': 'Standard customer profile',
+                'contact_strategy': 'Regular communication',
+                'risk_score': 3
+            }
+    
+    def generate_notification(self, customer_data, notification_type, context=None):
+        """Generate personalized notification using Bedrock"""
+        if not self.bedrock_client:
+            return self._fallback_notification(customer_data, notification_type)
+        
+        try:
+            prompt = self._build_prompt(customer_data, notification_type, context)
+            
+            body = json.dumps({
+                "anthropic_version": "bedrock-2023-05-31",
+                "max_tokens": 200,
+                "messages": [
+                    {
+                        "role": "user",
+                        "content": prompt
+                    }
+                ]
+            })
+            
+            response = self.bedrock_client.invoke_model(
+                modelId=self.model_id,
+                body=body
+            )
+            
+            response_body = json.loads(response['body'].read())
+            return response_body['content'][0]['text'].strip()
+            
+        except Exception as e:
+            print(f"Bedrock error: {e}")
+            return self._fallback_notification(customer_data, notification_type)
+    
+    def _build_prompt(self, customer_data, notification_type, context):
+        """Build prompt for Bedrock based on customer data and notification type"""
+        segment = customer_data.get('Segment', 'Unknown')
+        energy_usage = customer_data.get('Daily_Energy_Usage_kWh', 0)
+        solar_ev = customer_data.get('Solar_EV_Ownership', 'None')
+        region = customer_data.get('Region', 'Unknown')
+        
+        base_prompt = f"""
+You are a smart notification system for an energy supplier. Create a personalized, engaging notification message.
+
+Customer Profile:
+- Segment: {segment}
+- Daily Energy Usage: {energy_usage} kWh
+- Solar/EV Ownership: {solar_ev}
+- Region: {region}
+- Notification Type: {notification_type}
+"""
+        
+        if notification_type == "billing_alert":
+            prompt = base_prompt + f"""
+Context: {context or 'Billing anomaly detected'}
+
+Create a professional, reassuring message about a billing issue. Keep it:
+- Empathetic and understanding
+- Clear about next steps
+- Appropriate for {segment} customers
+- Under 150 characters for SMS/email subject
+"""
+        
+        elif notification_type == "energy_saving":
+            prompt = base_prompt + f"""
+Context: High energy usage detected ({energy_usage} kWh/day)
+
+Create an engaging energy-saving tip message that:
+- Acknowledges their {segment} mindset
+- Provides actionable advice
+- Mentions their {solar_ev} setup if relevant
+- Is encouraging, not judgmental
+- Under 200 characters
+"""
+        
+        elif notification_type == "engagement":
+            prompt = base_prompt + f"""
+Context: Low campaign engagement detected
+
+Create a re-engagement message that:
+- Appeals to {segment} values
+- Offers relevant benefits
+- Feels personal, not generic
+- Encourages action
+- Under 160 characters
+"""
+        
+        elif notification_type == "value_seeker_special":
+            prompt = base_prompt + f"""
+Context: Special offer for Value Seekers segment
+
+Create a compelling offer message that:
+- Emphasizes cost savings and value
+- Mentions energy efficiency benefits
+- Includes urgency without being pushy
+- Appeals to practical mindset
+- Under 180 characters
+"""
+        
+        elif notification_type == "value_seeker_energy_savings":
+            prompt = base_prompt + f"""
+Context: Value Seeker with high energy usage ({energy_usage} kWh/day) - cost-saving opportunity
+
+Create a compelling energy-saving message that:
+- Emphasizes potential cost savings from reducing usage
+- Provides specific actionable tips
+- Mentions their current usage level
+- Appeals to their value-conscious mindset
+- Shows potential monthly savings
+- Under 180 characters
+"""
+        
+        prompt += "\n\nGenerate ONLY the notification message, no explanations or additional text."
+        return prompt
+    
+    def _fallback_notification(self, customer_data, notification_type):
+        """Fallback notifications when Bedrock is unavailable"""
+        segment = customer_data.get('Segment', 'Unknown')
+        
+        fallback_messages = {
+            "billing_alert": f"We've detected a billing issue on your account. Our team is reviewing it and will contact you shortly.",
+            "energy_saving": f"Your energy usage is higher than average. Check out our energy-saving tips in your account dashboard.",
+            "engagement": f"Don't miss out on exclusive offers and updates tailored for {segment} customers like you!",
+            "value_seeker_special": f"Limited time: Save up to 15% on your energy bills with our new efficiency program!"
+        }
+        
+        return fallback_messages.get(notification_type, "Important update about your energy account.")
 
 class SmartNotificationEngine:
     def __init__(self, csv_path):
         self.csv_path = csv_path
         self.df = pd.read_csv(csv_path)
+        # Remove any completely empty columns that might be created by trailing commas
+        self.df = self.df.dropna(axis=1, how='all')
+        # Clean the data on initialization
+        self.df = self.df.fillna({
+            'Daily_Energy_Usage_kWh': 0,
+            'Seasonal_Energy_Usage_kWh': 0,
+            'Campaign_Clicks': 0,
+            'Campaign_Opens': 0,
+            'Campaign_Conversions': 0,
+            'Solar_EV_Ownership': 'None',
+            'Billing_Anomaly': 'None',
+            'Support_Ticket_Issue': 'None'
+        })
         
     def load_data(self):
         """Reload data from CSV"""
         self.df = pd.read_csv(self.csv_path)
+        # Remove any completely empty columns that might be created by trailing commas
+        self.df = self.df.dropna(axis=1, how='all')
+        # Clean the data - replace NaN values with appropriate defaults
+        self.df = self.df.fillna({
+            'Daily_Energy_Usage_kWh': 0,
+            'Seasonal_Energy_Usage_kWh': 0,
+            'Campaign_Clicks': 0,
+            'Campaign_Opens': 0,
+            'Campaign_Conversions': 0,
+            'Solar_EV_Ownership': 'None',
+            'Billing_Anomaly': 'None',
+            'Support_Ticket_Issue': 'None'
+        })
         
     def get_customer_segments(self):
         """Get unique customer segments"""
@@ -33,68 +364,191 @@ class SmartNotificationEngine:
             (self.df['Campaign_Opens'] <= open_threshold)
         ]
     
-    def generate_notifications(self):
-        """Generate targeted notifications for different customer scenarios"""
+    def generate_unified_notifications(self):
+        """Unified AI workflow: Analyze customers → Prioritize → Generate targeted notifications"""
         notifications = []
+        bedrock_generator = BedrockNotificationGenerator()
         
-        # Billing anomaly notifications
-        billing_issues = self.get_billing_anomalies()
-        for _, customer in billing_issues.iterrows():
-            if customer['Billing_Anomaly'] == 'Overcharge':
-                notifications.append({
-                    'customer_id': customer['Customer_ID'],
-                    'segment': customer['Segment'],
-                    'type': 'billing_alert',
-                    'priority': 'high',
-                    'message': f"We've detected a potential overcharge on your account. Our team is reviewing your bill.",
-                    'channel': 'email_sms'
-                })
-            elif customer['Billing_Anomaly'] == 'Missed Payment':
-                notifications.append({
-                    'customer_id': customer['Customer_ID'],
-                    'segment': customer['Segment'],
-                    'type': 'payment_reminder',
-                    'priority': 'high',
-                    'message': f"Payment reminder: Your recent payment appears to be missing. Please check your account.",
-                    'channel': 'email_sms'
-                })
-            elif customer['Billing_Anomaly'] == 'Dispute':
-                notifications.append({
-                    'customer_id': customer['Customer_ID'],
-                    'segment': customer['Segment'],
-                    'type': 'dispute_update',
-                    'priority': 'medium',
-                    'message': f"Update on your billing dispute: Our team is working to resolve your concern.",
-                    'channel': 'email'
-                })
+        print("🤖 Starting unified AI notification workflow...")
         
-        # High energy usage notifications
-        high_users = self.get_high_energy_users()
-        for _, customer in high_users.iterrows():
-            if customer['Segment'] == 'Eco Savers':
-                notifications.append({
-                    'customer_id': customer['Customer_ID'],
-                    'segment': customer['Segment'],
-                    'type': 'energy_saving_tip',
-                    'priority': 'low',
-                    'message': f"Your energy usage is higher than average. Here are some eco-friendly tips to reduce consumption.",
-                    'channel': 'app_notification'
-                })
+        # Step 1: Analyze ALL customers with AI to determine who needs contact
+        all_customers = self.df.copy()
+        customer_analyses = []
         
-        # Low engagement re-engagement
-        low_engagement = self.get_low_engagement_customers()
-        for _, customer in low_engagement.iterrows():
-            if customer['Segment'] == 'Digital Natives':
-                notifications.append({
-                    'customer_id': customer['Customer_ID'],
-                    'segment': customer['Segment'],
-                    'type': 'engagement',
-                    'priority': 'low',
-                    'message': f"Check out our new digital features and exclusive offers just for you!",
-                    'channel': 'push_notification'
-                })
+        print(f"📊 Analyzing {len(all_customers)} customers for contact priority...")
         
+        for _, customer in all_customers.iterrows():
+            customer_data = customer.to_dict()
+            
+            # Determine context based on customer situation
+            context = self._determine_customer_context(customer_data)
+            
+            # Get AI analysis for this customer
+            analysis = bedrock_generator.analyze_customer_priority(customer_data, context)
+            analysis['customer_data'] = customer_data
+            customer_analyses.append(analysis)
+        
+        # Step 2: Sort by AI-determined priority and risk
+        customer_analyses.sort(key=lambda x: (
+            {'high': 3, 'medium': 2, 'low': 1}.get(x['priority'], 1),
+            x['risk_score']
+        ), reverse=True)
+        
+        print(f"🎯 AI identified {len([a for a in customer_analyses if a['priority'] in ['high', 'medium']])} high/medium priority customers")
+        
+        # Step 3: Generate notifications ONLY for customers who need contact
+        for analysis in customer_analyses:
+            customer_data = analysis['customer_data']
+            
+            # AI-driven filtering: Only contact customers who truly need it
+            should_contact = self._should_contact_customer(analysis)
+            
+            if not should_contact:
+                continue
+            
+            # Step 4: Determine the BEST notification type for this specific customer
+            notification_type = self._determine_optimal_notification_type(customer_data, analysis)
+            
+            # Step 5: Generate the PERFECT message for this customer's situation
+            message = bedrock_generator.generate_notification(
+                customer_data, 
+                notification_type, 
+                f"{analysis['reason']} | Strategy: {analysis['contact_strategy']}"
+            )
+            
+            notifications.append({
+                'customer_id': customer_data['Customer_ID'],
+                'segment': customer_data['Segment'],
+                'type': notification_type,
+                'priority': analysis['priority'],
+                'urgency': analysis['urgency'],
+                'message': message,
+                'channel': analysis['channel'],
+                'reason': analysis['reason'],
+                'contact_strategy': analysis['contact_strategy'],
+                'risk_score': analysis['risk_score'],
+                'ai_generated': True,
+                'ai_prioritized': True,
+                'should_contact_reason': self._get_contact_reason(analysis)
+            })
+        
+        print(f"✅ Generated {len(notifications)} targeted notifications")
         return notifications
+    
+    def _should_contact_customer(self, analysis):
+        """AI-driven decision on whether to contact this customer"""
+        customer_data = analysis['customer_data']
+        
+        # Always contact high priority customers
+        if analysis['priority'] == 'high':
+            return True
+        
+        # Contact medium priority if risk score is significant
+        if analysis['priority'] == 'medium' and analysis['risk_score'] >= 5:
+            return True
+        
+        # Contact low priority only if they have specific actionable issues
+        if analysis['priority'] == 'low':
+            billing_issue = customer_data.get('Billing_Anomaly', 'None') != 'None'
+            high_energy = customer_data.get('Daily_Energy_Usage_kWh', 0) > 30
+            very_low_engagement = customer_data.get('Campaign_Clicks', 0) == 0
+            is_value_seeker = customer_data.get('Segment') == 'Value Seekers'
+            
+            # Contact if they have actionable issues or are in target segment
+            return billing_issue or (high_energy and is_value_seeker) or (very_low_engagement and analysis['risk_score'] >= 6)
+        
+        return False
+    
+    def _determine_optimal_notification_type(self, customer_data, analysis):
+        """Determine the BEST notification type based on AI analysis and customer data"""
+        billing_anomaly = customer_data.get('Billing_Anomaly', 'None')
+        segment = customer_data.get('Segment', 'Unknown')
+        energy_usage = customer_data.get('Daily_Energy_Usage_kWh', 0)
+        campaign_engagement = customer_data.get('Campaign_Clicks', 0)
+        
+        # Priority 1: Billing issues (immediate action needed)
+        if billing_anomaly != 'None':
+            return 'billing_alert'
+        
+        # Priority 2: Value Seekers with high energy usage (cost-saving opportunity)
+        if segment == 'Value Seekers' and energy_usage > 25:
+            return 'value_seeker_energy_savings'
+        
+        # Priority 3: High energy usage (efficiency opportunity)
+        if energy_usage > 30:
+            return 'energy_saving'
+        
+        # Priority 4: Low engagement (re-engagement needed)
+        if campaign_engagement < 3:
+            return 'engagement'
+        
+        # Priority 5: Value Seekers (special offers)
+        if segment == 'Value Seekers':
+            return 'value_seeker_special'
+        
+        # Default: General engagement
+        return 'engagement'
+    
+    def _get_contact_reason(self, analysis):
+        """Get human-readable reason for contacting this customer"""
+        priority = analysis['priority']
+        risk_score = analysis['risk_score']
+        reason = analysis['reason']
+        
+        if priority == 'high':
+            return f"High priority: {reason}"
+        elif priority == 'medium' and risk_score >= 5:
+            return f"Medium priority with risk score {risk_score}: {reason}"
+        else:
+            return f"Actionable opportunity: {reason}"
+    
+    def _determine_customer_context(self, customer_data):
+        """Determine context for AI analysis based on customer situation"""
+        contexts = []
+        
+        billing_anomaly = customer_data.get('Billing_Anomaly', 'None')
+        if billing_anomaly != 'None':
+            contexts.append(f"Billing issue: {billing_anomaly}")
+        
+        energy_usage = customer_data.get('Daily_Energy_Usage_kWh', 0)
+        if energy_usage > 30:
+            contexts.append("High energy consumption")
+        elif energy_usage < 12:
+            contexts.append("Low energy consumption")
+        
+        campaign_clicks = customer_data.get('Campaign_Clicks', 0)
+        campaign_opens = customer_data.get('Campaign_Opens', 0)
+        if campaign_clicks < 3 and campaign_opens < 10:
+            contexts.append("Low engagement with campaigns")
+        
+        support_issue = customer_data.get('Support_Ticket_Issue', 'None')
+        if support_issue != 'None':
+            contexts.append(f"Recent support issue: {support_issue}")
+        
+        solar_ev = customer_data.get('Solar_EV_Ownership', 'None')
+        if solar_ev != 'None':
+            contexts.append(f"Green technology owner: {solar_ev}")
+        
+        segment = customer_data.get('Segment', 'Unknown')
+        if segment == 'Value Seekers':
+            contexts.append("Target segment: Value Seekers - focus on cost savings")
+        
+        return "; ".join(contexts) if contexts else "Standard customer analysis"
+    
+    def _determine_notification_type(self, customer_data, analysis):
+        """Determine the best notification type based on customer data and AI analysis"""
+        billing_anomaly = customer_data.get('Billing_Anomaly', 'None')
+        
+        if billing_anomaly != 'None':
+            return 'billing_alert'
+        elif customer_data.get('Daily_Energy_Usage_kWh', 0) > 25:
+            return 'energy_saving'
+        elif customer_data.get('Campaign_Clicks', 0) < 3:
+            return 'engagement'
+        elif customer_data.get('Segment') == 'Value Seekers':
+            return 'value_seeker_special'
+        else:
+            return 'engagement'
 
 # Initialize the notification engine
 csv_file_path = r"Extra Data Challenge 4#.csv"
@@ -108,7 +562,8 @@ def dashboard():
 @app.route('/api/customers')
 def get_customers():
     """Get all customers data"""
-    customers = notification_engine.df.to_dict('records')
+    # Convert to dict and handle NaN values
+    customers = notification_engine.df.replace({np.nan: None}).to_dict('records')
     return jsonify(customers)
 
 @app.route('/api/refresh-data', methods=['POST'])
@@ -136,39 +591,87 @@ def get_segments():
         'Daily_Energy_Usage_kWh': 'mean',
         'Campaign_Clicks': 'mean',
         'Campaign_Opens': 'mean'
-    }).round(2).to_dict('index')
+    }).round(2)
+    
+    # Replace NaN values with 0 and convert to dict
+    segments = segments.fillna(0).to_dict('index')
     return jsonify(segments)
 
 @app.route('/api/notifications')
 def get_notifications():
-    """Generate and return notifications"""
-    notifications = notification_engine.generate_notifications()
+    """Generate unified AI-driven notifications"""
+    notifications = notification_engine.generate_unified_notifications()
     return jsonify(notifications)
 
 @app.route('/api/billing-issues')
 def get_billing_issues():
     """Get customers with billing anomalies"""
     billing_issues = notification_engine.get_billing_anomalies()
-    return jsonify(billing_issues.to_dict('records'))
+    # Replace NaN values and convert to dict
+    billing_data = billing_issues.replace({np.nan: None}).to_dict('records')
+    return jsonify(billing_data)
 
 @app.route('/api/value-seekers')
 def get_value_seekers():
     """Get detailed Value Seekers analysis"""
     value_seekers = notification_engine.df[notification_engine.df['Segment'] == 'Value Seekers']
     
+    # Handle potential NaN values in calculations
+    avg_daily = value_seekers['Daily_Energy_Usage_kWh'].mean()
+    avg_seasonal = value_seekers['Seasonal_Energy_Usage_kWh'].mean()
+    avg_clicks = value_seekers['Campaign_Clicks'].mean()
+    avg_opens = value_seekers['Campaign_Opens'].mean()
+    
     analysis = {
         'total_count': len(value_seekers),
-        'avg_daily_energy': round(value_seekers['Daily_Energy_Usage_kWh'].mean(), 2),
-        'avg_seasonal_energy': round(value_seekers['Seasonal_Energy_Usage_kWh'].mean(), 2),
+        'avg_daily_energy': round(avg_daily if not pd.isna(avg_daily) else 0, 2),
+        'avg_seasonal_energy': round(avg_seasonal if not pd.isna(avg_seasonal) else 0, 2),
         'solar_ev_breakdown': value_seekers['Solar_EV_Ownership'].value_counts().to_dict(),
         'billing_issues': value_seekers['Billing_Anomaly'].value_counts().to_dict(),
-        'avg_campaign_clicks': round(value_seekers['Campaign_Clicks'].mean(), 2),
-        'avg_campaign_opens': round(value_seekers['Campaign_Opens'].mean(), 2),
+        'avg_campaign_clicks': round(avg_clicks if not pd.isna(avg_clicks) else 0, 2),
+        'avg_campaign_opens': round(avg_opens if not pd.isna(avg_opens) else 0, 2),
         'regions': value_seekers['Region'].value_counts().to_dict(),
         'support_issues': value_seekers['Support_Ticket_Issue'].value_counts().to_dict()
     }
     
     return jsonify(analysis)
+
+@app.route('/api/customer-analysis')
+def get_customer_analysis():
+    """Get AI-powered customer analysis and prioritization"""
+    try:
+        bedrock_generator = BedrockNotificationGenerator()
+        analyses = []
+        
+        # Analyze a sample of customers for the dashboard
+        sample_customers = notification_engine.df.head(10)  # Limit for demo
+        
+        for _, customer in sample_customers.iterrows():
+            customer_data = customer.to_dict()
+            context = notification_engine._determine_customer_context(customer_data)
+            analysis = bedrock_generator.analyze_customer_priority(customer_data, context)
+            
+            analyses.append({
+                'customer_id': customer_data['Customer_ID'],
+                'segment': customer_data['Segment'],
+                'priority': analysis['priority'],
+                'urgency': analysis['urgency'],
+                'risk_score': analysis['risk_score'],
+                'reason': analysis['reason'],
+                'contact_strategy': analysis['contact_strategy'],
+                'recommended_channel': analysis['channel']
+            })
+        
+        # Sort by priority and risk score
+        analyses.sort(key=lambda x: (
+            {'high': 3, 'medium': 2, 'low': 1}.get(x['priority'], 1),
+            x['risk_score']
+        ), reverse=True)
+        
+        return jsonify(analyses)
+        
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
 
 @app.route('/api/send-notification', methods=['POST'])
 def send_notification():
