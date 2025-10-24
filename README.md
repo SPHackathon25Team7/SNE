@@ -1,5 +1,6 @@
 https://sphackathon25team7.atlassian.net/
 
+SPHackathon25Team7@outlook.com
 
 # Smart Notification Engine
 
