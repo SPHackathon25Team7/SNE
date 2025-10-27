@@ -1,0 +1,30 @@
+🔔 Personalized Notification Examples:
+
+High-Risk (Churn Score ≥70%):
+Retention offers with discounts and free features
+Urgent support interventions
+Exclusive location-based deals
+Win-back campaigns with competitive offers
+
+Medium-Risk (40-69%):
+Feature discovery and engagement prompts
+Feedback requests with incentives
+Upgrade suggestions and tips
+Plan optimization recommendations
+
+Low-Risk (<40%):
+Community engagement initiatives
+Referral programs
+Appreciation messages
+New feature announcements
+
+
+# Define scoring factors and their weights
+    factors = {
+        'engagement': 0.25,      # 25% weight
+        'satisfaction': 0.20,    # 20% weight  
+        'usage_patterns': 0.20,  # 20% weight
+        'payment_behavior': 0.15, # 15% weight
+        'support_interactions': 0.10, # 10% weight
+        'demographic_tenure': 0.10   # 10% weight
+    }
