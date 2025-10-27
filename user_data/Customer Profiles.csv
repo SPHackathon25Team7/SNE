@@ -1,0 +1,26 @@
+Customer_ID,Name,Age,Location,Preferred_Channel,Segment,Opted_In,Income_Bracket,Customer_Since,Satisfaction_Score
+3000,John Doe,50,Aberdeen,Email,Engaged,Yes,High,2020-08-28,2
+3001,Emily Clark,47,Glasgow,Email,At Risk,No,High,2021-07-08,8
+3002,Fiona MacLeod,69,Edinburgh,Email,Digital Native,No,Medium,2018-11-17,1
+3003,Jamie Brown,31,Aberdeen,Email,Dormant,Yes,Low,2024-05-11,9
+3004,Priya Patel,61,Edinburgh,Email,At Risk,Yes,Low,2016-11-20,7
+3005,Alex Smith,51,Inverness,App Push,Engaged,Yes,Medium,2019-04-24,8
+3006,Emily Clark,43,Inverness,Email,At Risk,Yes,Medium,2023-11-02,4
+3007,Priya Patel,68,Inverness,SMS,At Risk,No,Medium,2021-11-27,9
+3008,Alex Smith,40,Dundee,App Push,Dormant,No,Low,2018-09-25,9
+3009,John Doe,32,Aberdeen,Email,Engaged,Yes,High,2023-03-14,6
+3010,Fiona MacLeod,35,Glasgow,App Push,Dormant,Yes,Low,2019-08-05,8
+3011,John Doe,32,Inverness,SMS,Digital Native,No,Low,2022-02-27,6
+3012,Emily Clark,45,Aberdeen,SMS,Engaged,Yes,Medium,2020-12-04,10
+3013,Priya Patel,30,Dundee,App Push,At Risk,No,Medium,2020-10-26,2
+3014,Fiona MacLeod,30,Inverness,App Push,At Risk,No,High,2024-05-27,9
+3015,Alex Smith,61,Edinburgh,Email,Dormant,No,High,2024-04-28,10
+3016,Fiona MacLeod,49,Aberdeen,App Push,Digital Native,Yes,High,2016-03-21,5
+3017,Fiona MacLeod,68,Edinburgh,App Push,Digital Native,No,Low,2016-05-08,9
+3018,Jamie Brown,70,Aberdeen,Email,At Risk,Yes,High,2023-02-28,8
+3019,Emily Clark,68,Glasgow,Email,Engaged,Yes,Medium,2017-05-03,1
+3020,John Doe,39,Dundee,Email,Engaged,Yes,Medium,2018-10-29,4
+3021,Emily Clark,59,Edinburgh,SMS,Engaged,No,Medium,2020-12-10,3
+3022,Priya Patel,60,Edinburgh,SMS,Dormant,No,High,2023-03-06,7
+3023,Jamie Brown,50,Glasgow,App Push,Digital Native,No,Medium,2020-05-01,5
+3024,John Doe,51,Dundee,SMS,Dormant,Yes,High,2022-07-05,1

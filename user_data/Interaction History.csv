@@ -1,0 +1,26 @@
+Customer_ID,Channel,Date & Time,Interaction_Type,Sentiment,Summary,Response_Time_Minutes,Resolution_Status,Agent_ID
+3000,SMS,2025-09-12 23:03,Feedback,Neutral,Inquired about payment options,31,Resolved,A-257
+3001,SMS,2025-08-21 16:06,Query,Positive,Asked about green tariff,3,Pending,A-224
+3002,Email,2025-10-01 02:11,Complaint,Positive,Asked about green tariff,17,Resolved,A-500
+3003,SMS,2025-08-01 02:15,Query,Negative,Reported billing issue,9,Resolved,A-634
+3004,Phone,2025-09-02 12:36,Feedback,Positive,Reported billing issue,27,Pending,A-315
+3005,SMS,2025-08-05 17:38,Unsubscribe,Negative,Requested to stop notifications,1,Pending,A-321
+3006,SMS,2025-09-30 22:39,Query,Negative,Reported billing issue,31,Resolved,A-666
+3007,Chat,2025-10-04 21:40,Feedback,Neutral,Requested to stop notifications,27,Resolved,A-197
+3008,Email,2025-08-11 02:36,Unsubscribe,Negative,Reported billing issue,15,Pending,A-870
+3009,SMS,2025-10-04 02:32,Feedback,Neutral,Reported billing issue,43,Pending,A-931
+3010,SMS,2025-08-28 19:00,Complaint,Neutral,Reported billing issue,7,Pending,A-426
+3011,Phone,2025-08-18 20:31,Complaint,Positive,Inquired about payment options,12,Resolved,A-328
+3012,Email,2025-07-01 16:39,Complaint,Neutral,Requested to stop notifications,33,Resolved,A-374
+3013,SMS,2025-08-08 04:07,Query,Positive,Gave feedback on new app,10,Pending,A-859
+3014,Chat,2025-09-20 09:24,Complaint,Neutral,Inquired about payment options,33,Escalated,A-157
+3015,Chat,2025-09-13 15:20,Query,Neutral,Requested to stop notifications,53,Pending,A-552
+3016,Email,2025-07-29 15:40,Unsubscribe,Neutral,Reported billing issue,17,Pending,A-317
+3017,SMS,2025-07-18 22:58,Feedback,Negative,Gave feedback on new app,33,Resolved,A-909
+3018,Email,2025-09-29 23:00,Complaint,Positive,Reported billing issue,36,Escalated,A-625
+3019,Phone,2025-08-06 18:31,Query,Neutral,Gave feedback on new app,19,Escalated,A-886
+3020,Phone,2025-08-17 09:45,Complaint,Positive,Reported billing issue,55,Escalated,A-184
+3021,Email,2025-08-11 09:45,Complaint,Negative,Reported billing issue,51,Pending,A-775
+3022,Chat,2025-08-11 09:45,Query,Negative,Gave feedback on new app,19,Escalated,A-641
+3023,Phone,2025-07-18 09:45,Unsubscribe,Neutral,Reported billing issue,32,Escalated,A-976
+3024,Chat,2025-09-18 09:45,Complaint,Negative,Requested to stop notifications,55,Resolved,A-726

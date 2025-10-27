@@ -699,44 +699,146 @@
                     notification.priority === 'medium' ? 'IMPORTANT' : 'ROUTINE';
 
                 html += `
-                    <div class="notification-item priority-${notification.priority}" data-priority="${notification.priority}" style="margin-bottom: 1rem;">
-                        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 0.75rem;">
+                    <div class="notification-item priority-${notification.priority}" data-priority="${notification.priority}" style="margin-bottom: 1.5rem; border: 1px solid #e9ecef;">
+                        <!-- Customer Header -->
+                        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1rem; padding-bottom: 0.75rem; border-bottom: 2px solid #f8f9fa;">
                             <div>
-                                <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.25rem; flex-wrap: wrap;">
-                                    <span style="font-size: 1rem;">${priorityIcon}</span>
-                                    <strong style="font-size: 1rem;">Customer ${notification.customer_id}</strong>
-                                    <span style="color: #666; font-size: 0.8rem;">(${notification.segment})</span>
+                                <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.5rem; flex-wrap: wrap;">
+                                    <span style="font-size: 1.1rem;">${priorityIcon}</span>
+                                    <strong style="font-size: 1.1rem; color: #333;">${notification.customer_name || 'Customer ' + notification.customer_id}</strong>
+                                    <span style="color: #666; font-size: 0.8rem;">(ID: ${notification.customer_id})</span>
                                 </div>
                                 <div style="margin-bottom: 0.5rem;">
-                                    <span style="background: ${notification.priority === 'high' ? '#dc3545' : notification.priority === 'medium' ? '#ffc107' : '#28a745'}; color: ${notification.priority === 'medium' ? '#000' : 'white'}; padding: 0.2rem 0.5rem; border-radius: 12px; font-size: 0.7rem; font-weight: bold; margin-right: 0.5rem;">
+                                    <span style="background: ${notification.priority === 'high' ? '#dc3545' : notification.priority === 'medium' ? '#ffc107' : '#28a745'}; color: ${notification.priority === 'medium' ? '#000' : 'white'}; padding: 0.3rem 0.7rem; border-radius: 15px; font-size: 0.75rem; font-weight: bold; margin-right: 0.5rem;">
                                         ${priorityLabel}
                                     </span>
-                                    ${notification.risk_score ? `<span style="background: ${notification.risk_score > 7 ? '#dc3545' : notification.risk_score > 4 ? '#ffc107' : '#28a745'}; color: white; padding: 0.2rem 0.5rem; border-radius: 3px; font-size: 0.7rem; font-weight: bold;">Risk: ${notification.risk_score}/10</span>` : ''}
+                                    ${notification.churn_risk ? `<span style="background: ${notification.churn_risk > 80 ? '#dc3545' : notification.churn_risk > 60 ? '#ffc107' : '#28a745'}; color: white; padding: 0.3rem 0.7rem; border-radius: 15px; font-size: 0.75rem; font-weight: bold; margin-right: 0.5rem;">Churn: ${notification.churn_risk}%</span>` : ''}
+                                    ${notification.opted_in === 'Yes' ? '<span style="background: #28a745; color: white; padding: 0.3rem 0.7rem; border-radius: 15px; font-size: 0.75rem;">✓ Opted In</span>' : '<span style="background: #dc3545; color: white; padding: 0.3rem 0.7rem; border-radius: 15px; font-size: 0.75rem;">✗ Not Opted In</span>'}
                                 </div>
                             </div>
-                            <div style="text-align: right; font-size: 0.75rem; color: #666;">
-                                <div><strong>Rank:</strong> #${actualIndex + 1}</div>
-                                <div><strong>Channel:</strong> ${notification.channel}</div>
+                            <div style="text-align: right; font-size: 0.8rem; color: #666; background: #f8f9fa; padding: 0.5rem; border-radius: 8px;">
+                                <div style="font-weight: bold; color: #333;">Rank: #${actualIndex + 1}</div>
+                                <div><strong>Via:</strong> ${notification.preferred_channel || notification.channel}</div>
+                                <div><strong>Risk:</strong> ${notification.risk_score || 'N/A'}/10</div>
                             </div>
                         </div>
                         
-                        <div style="margin-bottom: 0.75rem; font-weight: 500; color: #333; padding: 0.75rem; background: #f8f9fa; border-radius: 6px; border-left: 3px solid ${notification.priority === 'high' ? '#dc3545' : notification.priority === 'medium' ? '#ffc107' : '#28a745'};">
-                            <div style="font-size: 0.7rem; color: #666; margin-bottom: 0.5rem; text-transform: uppercase; font-weight: bold;">AI Message:</div>
-                            <div style="font-size: 0.9rem;">"${notification.message}"</div>
+                        <!-- AI Generated Message -->
+                        <div style="margin-bottom: 1rem; padding: 1rem; background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%); border-radius: 8px; border-left: 4px solid ${notification.priority === 'high' ? '#dc3545' : notification.priority === 'medium' ? '#ffc107' : '#28a745'};">
+                            <div style="font-size: 0.75rem; color: #666; margin-bottom: 0.5rem; text-transform: uppercase; font-weight: bold; display: flex; align-items: center; gap: 0.5rem;">
+                                <span>🤖</span> AI Generated Message:
+                            </div>
+                            <div style="font-size: 0.95rem; font-weight: 500; color: #333; font-style: italic; line-height: 1.4;">"${notification.message}"</div>
                         </div>
                         
-                        ${notification.should_contact_reason ? `<div style="margin-bottom: 0.5rem; font-size: 0.8rem; color: #495057; background: #e9ecef; padding: 0.5rem; border-radius: 4px;"><strong>🎯 Why:</strong> ${notification.should_contact_reason}</div>` : ''}
+                        <!-- Customer Service Insights Section -->
+                        <div style="background: #fff3cd; border: 1px solid #ffeaa7; border-radius: 8px; padding: 1rem; margin-bottom: 1rem;">
+                            <h5 style="color: #856404; margin: 0 0 0.75rem 0; font-size: 0.9rem; font-weight: bold; display: flex; align-items: center; gap: 0.5rem;">
+                                <span>🎯</span> Customer Service Insights
+                            </h5>
+                            
+                            <!-- Why Contact -->
+                            ${notification.contact_reason ? `
+                            <div style="margin-bottom: 0.75rem; padding: 0.75rem; background: white; border-radius: 6px; border-left: 3px solid #f39c12;">
+                                <div style="font-size: 0.8rem; font-weight: bold; color: #f39c12; margin-bottom: 0.5rem;">📋 WHY CONTACT THIS CUSTOMER:</div>
+                                <div style="font-size: 0.85rem; color: #333; line-height: 1.4;">${notification.contact_reason}</div>
+                            </div>` : ''}
+                            
+                            <!-- Trigger Factors -->
+                            ${notification.trigger_factors ? `
+                            <div style="margin-bottom: 0.75rem; padding: 0.75rem; background: white; border-radius: 6px; border-left: 3px solid #17a2b8;">
+                                <div style="font-size: 0.8rem; font-weight: bold; color: #17a2b8; margin-bottom: 0.5rem;">⚡ TRIGGER FACTORS:</div>
+                                <div style="font-size: 0.85rem; color: #333;">${notification.trigger_factors}</div>
+                            </div>` : ''}
+                            
+                            <!-- Potential Impact -->
+                            ${notification.potential_impact ? `
+                            <div style="margin-bottom: 0.75rem; padding: 0.75rem; background: white; border-radius: 6px; border-left: 3px solid #dc3545;">
+                                <div style="font-size: 0.8rem; font-weight: bold; color: #dc3545; margin-bottom: 0.5rem;">⚠️ POTENTIAL IMPACT IF NOT CONTACTED:</div>
+                                <div style="font-size: 0.85rem; color: #333; line-height: 1.4;">${notification.potential_impact}</div>
+                            </div>` : ''}
+                        </div>
                         
-                        ${notification.contact_strategy ? `<div style="margin-bottom: 0.75rem; font-size: 0.8rem; color: #495057;"><strong>📋 Strategy:</strong> ${notification.contact_strategy}</div>` : ''}
+                        <!-- Communication Strategy Section -->
+                        <div style="background: #d4edda; border: 1px solid #c3e6cb; border-radius: 8px; padding: 1rem; margin-bottom: 1rem;">
+                            <h5 style="color: #155724; margin: 0 0 0.75rem 0; font-size: 0.9rem; font-weight: bold; display: flex; align-items: center; gap: 0.5rem;">
+                                <span>💬</span> Communication Strategy for CS Agents
+                            </h5>
+                            
+                            <!-- Customer Insights -->
+                            ${notification.customer_insights ? `
+                            <div style="margin-bottom: 0.75rem; padding: 0.75rem; background: white; border-radius: 6px; border-left: 3px solid #28a745;">
+                                <div style="font-size: 0.8rem; font-weight: bold; color: #28a745; margin-bottom: 0.5rem;">👤 CUSTOMER PERSONALITY & INSIGHTS:</div>
+                                <div style="font-size: 0.85rem; color: #333; line-height: 1.4;">${notification.customer_insights}</div>
+                            </div>` : ''}
+                            
+                            <!-- Communication Style -->
+                            ${notification.communication_style ? `
+                            <div style="margin-bottom: 0.75rem; padding: 0.75rem; background: white; border-radius: 6px; border-left: 3px solid #6f42c1;">
+                                <div style="font-size: 0.8rem; font-weight: bold; color: #6f42c1; margin-bottom: 0.5rem;">🗣️ RECOMMENDED COMMUNICATION STYLE:</div>
+                                <div style="font-size: 0.85rem; color: #333;">${notification.communication_style}</div>
+                            </div>` : ''}
+                            
+                            <!-- Conversation Starters -->
+                            ${notification.conversation_starters ? `
+                            <div style="margin-bottom: 0.75rem; padding: 0.75rem; background: white; border-radius: 6px; border-left: 3px solid #20c997;">
+                                <div style="font-size: 0.8rem; font-weight: bold; color: #20c997; margin-bottom: 0.5rem;">💡 CONVERSATION STARTERS:</div>
+                                <div style="font-size: 0.85rem; color: #333; font-style: italic; line-height: 1.4;">"${notification.conversation_starters}"</div>
+                            </div>` : ''}
+                            
+
+                        </div>
                         
-                        <div style="display: flex; justify-content: space-between; align-items: center; padding-top: 0.5rem; border-top: 1px solid #dee2e6;">
-                            <small style="color: #666; font-size: 0.75rem;">
-                                ${notification.urgency ? notification.urgency.replace(/_/g, ' ') : 'Standard'}
-                            </small>
-                            <button class="btn" style="padding: 0.4rem 0.8rem; font-size: 0.8rem; font-weight: bold;" 
-                                    onclick="sendNotification(${notification.customer_id}, '${notification.message.replace(/'/g, "\\'")}', '${notification.channel}')">
-                                📤 Send
-                            </button>
+                        <!-- Resolution Strategy Section -->
+                        <div style="background: #e2e3f0; border: 1px solid #d1d3e2; border-radius: 8px; padding: 1rem; margin-bottom: 1rem;">
+                            <h5 style="color: #5a5c69; margin: 0 0 0.75rem 0; font-size: 0.9rem; font-weight: bold; display: flex; align-items: center; gap: 0.5rem;">
+                                <span>🛠️</span> Resolution Strategies
+                            </h5>
+                            
+                            <!-- Primary Strategy -->
+                            ${notification.resolution_strategy ? `
+                            <div style="margin-bottom: 0.75rem; padding: 0.75rem; background: white; border-radius: 6px; border-left: 3px solid #667eea;">
+                                <div style="font-size: 0.8rem; font-weight: bold; color: #667eea; margin-bottom: 0.5rem;">🎯 PRIMARY STRATEGY:</div>
+                                <div style="font-size: 0.85rem; color: #333; line-height: 1.4;">${notification.resolution_strategy}</div>
+                            </div>` : ''}
+                            
+                            <!-- Alternative Approach -->
+                            ${notification.alternative_approach ? `
+                            <div style="margin-bottom: 0.75rem; padding: 0.75rem; background: white; border-radius: 6px; border-left: 3px solid #6c757d;">
+                                <div style="font-size: 0.8rem; font-weight: bold; color: #6c757d; margin-bottom: 0.5rem;">🔄 ALTERNATIVE APPROACH:</div>
+                                <div style="font-size: 0.85rem; color: #333; line-height: 1.4;">${notification.alternative_approach}</div>
+                            </div>` : ''}
+                            
+                            <!-- Success Indicators -->
+                            ${notification.success_indicators ? `
+                            <div style="margin-bottom: 0.75rem; padding: 0.75rem; background: white; border-radius: 6px; border-left: 3px solid #28a745;">
+                                <div style="font-size: 0.8rem; font-weight: bold; color: #28a745; margin-bottom: 0.5rem;">✅ SUCCESS INDICATORS:</div>
+                                <div style="font-size: 0.85rem; color: #333; line-height: 1.4;">${notification.success_indicators}</div>
+                            </div>` : ''}
+                            
+                            <!-- Follow-up Timing -->
+                            ${notification.follow_up_timing ? `
+                            <div style="margin-bottom: 0.75rem; padding: 0.75rem; background: white; border-radius: 6px; border-left: 3px solid #ffc107;">
+                                <div style="font-size: 0.8rem; font-weight: bold; color: #e0a800; margin-bottom: 0.5rem;">📅 FOLLOW-UP TIMING:</div>
+                                <div style="font-size: 0.85rem; color: #333; line-height: 1.4;">${notification.follow_up_timing}</div>
+                            </div>` : ''}
+                        </div>
+                        
+                        <!-- Action Buttons -->
+                        <div style="display: flex; justify-content: space-between; align-items: center; padding-top: 1rem; border-top: 2px solid #f8f9fa;">
+                            <div style="font-size: 0.8rem; color: #666;">
+                                <strong>Urgency:</strong> ${notification.urgency ? notification.urgency.replace(/_/g, ' ').toUpperCase() : 'STANDARD'}
+                            </div>
+                            <div style="display: flex; gap: 0.5rem;">
+                                <button class="btn" style="padding: 0.5rem 1rem; font-size: 0.85rem; font-weight: bold; background: #17a2b8;" 
+                                        onclick="viewCustomerDetails(${notification.customer_id})">
+                                    👤 View Details
+                                </button>
+                                <button class="btn" style="padding: 0.5rem 1rem; font-size: 0.85rem; font-weight: bold;" 
+                                        onclick="sendNotification(${notification.customer_id}, '${notification.message.replace(/'/g, "\\'")}', '${notification.channel}')">
+                                    📤 Send Notification
+                                </button>
+                            </div>
                         </div>
                     </div>
                 `;
@@ -805,10 +907,51 @@
                 });
 
                 const result = await response.json();
-                alert(`Notification sent to customer ${customerId} via ${channel}`);
+                alert(`✅ Notification sent to customer ${customerId} via ${channel}\n\nNext steps:\n1. Monitor customer response\n2. Follow up as recommended\n3. Update customer record`);
             } catch (error) {
-                alert('Error sending notification');
+                alert('❌ Error sending notification');
                 console.error('Error:', error);
+            }
+        }
+
+        function viewCustomerDetails(customerId) {
+            // Find the customer in the notifications data
+            const notification = allNotifications.find(n => n.customer_id === customerId);
+            
+            if (notification) {
+                const details = `
+CUSTOMER PROFILE SUMMARY
+========================
+Customer: ${notification.customer_name} (ID: ${customerId})
+Segment: Value Seekers
+Priority: ${notification.priority.toUpperCase()}
+Churn Risk: ${notification.churn_risk}%
+Channel: ${notification.preferred_channel}
+
+CONTACT STRATEGY
+================
+${notification.contact_reason || 'Standard engagement'}
+
+COMMUNICATION APPROACH
+======================
+${notification.communication_style || 'Professional and helpful'}
+
+CONVERSATION STARTERS
+====================
+${notification.conversation_starters || 'Standard greeting'}
+
+RESOLUTION STRATEGY
+==================
+${notification.resolution_strategy || 'Standard approach'}
+
+SUCCESS INDICATORS
+==================
+${notification.success_indicators || 'Customer satisfaction'}
+                `;
+                
+                alert(details);
+            } else {
+                alert('Customer details not found');
             }
         }
 
@@ -876,29 +1019,29 @@
                             <div class="metric-label">Total Value Seekers</div>
                         </div>
                         <div class="value-seekers-metric">
-                            <div class="metric-value">${data.avg_daily_energy}</div>
-                            <div class="metric-label">Avg Daily Energy (kWh)</div>
+                            <div class="metric-value">${data.avg_age}</div>
+                            <div class="metric-label">Average Age</div>
                         </div>
                         <div class="value-seekers-metric">
-                            <div class="metric-value">${data.avg_campaign_clicks}</div>
-                            <div class="metric-label">Avg Campaign Clicks</div>
+                            <div class="metric-value">${data.avg_engagement_score}</div>
+                            <div class="metric-label">Avg Engagement Score</div>
                         </div>
                         <div class="value-seekers-metric">
-                            <div class="metric-value">${data.avg_campaign_opens}</div>
-                            <div class="metric-label">Avg Campaign Opens</div>
+                            <div class="metric-value">${data.avg_churn_risk}%</div>
+                            <div class="metric-label">Avg Churn Risk</div>
                         </div>
                     </div>
                     
                     <!-- Detailed Insights -->
                     <div class="insights-section">
                         <div class="insight-card">
-                            <h4>🔋 Solar/EV Ownership</h4>
+                            <h4>📍 Locations</h4>
                 `;
 
-                for (const [ownership, count] of Object.entries(data.solar_ev_breakdown)) {
+                for (const [location, count] of Object.entries(data.location_breakdown || {})) {
                     html += `
                         <div class="insight-item">
-                            <span class="insight-label">${ownership}</span>
+                            <span class="insight-label">${location}</span>
                             <span class="insight-value">${count} customers</span>
                         </div>
                     `;
@@ -907,13 +1050,13 @@
                 html += `
                         </div>
                         <div class="insight-card">
-                            <h4>💳 Billing Issues</h4>
+                            <h4>📊 Subscription Types</h4>
                 `;
 
-                for (const [issue, count] of Object.entries(data.billing_issues)) {
+                for (const [subscription, count] of Object.entries(data.subscription_breakdown || {})) {
                     html += `
                         <div class="insight-item">
-                            <span class="insight-label">${issue}</span>
+                            <span class="insight-label">${subscription}</span>
                             <span class="insight-value">${count} customers</span>
                         </div>
                     `;
@@ -928,19 +1071,19 @@
                         <h4>💡 Key Insights</h4>
                         <div class="insight-point">
                             <span class="insight-icon">📊</span>
-                            <span class="insight-text">Value Seekers represent ${((data.total_count / 20) * 100).toFixed(1)}% of your customer base</span>
+                            <span class="insight-text">Found ${data.total_count} Value Seekers customers in your database</span>
                         </div>
                         <div class="insight-point">
-                            <span class="insight-icon">⚡</span>
-                            <span class="insight-text">Their average energy usage is ${data.avg_daily_energy} kWh/day</span>
+                            <span class="insight-icon">👥</span>
+                            <span class="insight-text">Average age: ${data.avg_age} years with ${data.avg_engagement_score} engagement score</span>
                         </div>
                         <div class="insight-point">
-                            <span class="insight-icon">📧</span>
-                            <span class="insight-text">Campaign engagement: ${data.avg_campaign_clicks} clicks, ${data.avg_campaign_opens} opens on average</span>
+                            <span class="insight-icon">⚠️</span>
+                            <span class="insight-text">Average churn risk: ${data.avg_churn_risk}% - monitor high-risk customers</span>
                         </div>
                         <div class="insight-point">
                             <span class="insight-icon">📍</span>
-                            <span class="insight-text">Most common regions: ${Object.keys(data.regions).slice(0, 2).join(', ')}</span>
+                            <span class="insight-text">Most common locations: ${Object.keys(data.location_breakdown || {}).slice(0, 2).join(', ')}</span>
                         </div>
                     </div>
                 `;
