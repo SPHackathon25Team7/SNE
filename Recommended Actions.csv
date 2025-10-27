@@ -1,0 +1,26 @@
+Customer_ID,Scenario,Recommended_Action,Urgency_Level,Follow_Up_Required,Assigned_Team
+3000,High usage detected,Send energy-saving tips,Medium,No,Marketing
+3001,No activity for 3 months,Send tariff comparison,Low,No,Support
+3002,New app download,Provide billing support,High,Yes,Support
+3003,New app download,Send payment reminder,Medium,Yes,Retention
+3004,No activity for 3 months,Send re-engagement offer,Low,Yes,Marketing
+3005,High usage detected,Offer app tutorial,Medium,No,Retention
+3006,High usage detected,Send energy-saving tips,Low,Yes,Marketing
+3007,High usage detected,Provide billing support,Medium,No,Support
+3008,New app download,Send payment reminder,Low,No,Support
+3009,Missed payment,Offer app tutorial,High,No,Retention
+3010,High usage detected,Provide billing support,Low,Yes,Retention
+3011,Missed payment,Offer app tutorial,Medium,No,Support
+3012,Missed payment,Send re-engagement offer,High,Yes,Support
+3013,New app download,Send re-engagement offer,Medium,Yes,Marketing
+3014,Billing query,Send re-engagement offer,Medium,No,Marketing
+3015,Tariff inquiry,Send re-engagement offer,Medium,Yes,Marketing
+3016,High usage detected,Send payment reminder,Low,No,Retention
+3017,No activity for 3 months,Send re-engagement offer,Medium,No,Marketing
+3018,Tariff inquiry,Send re-engagement offer,Low,Yes,Support
+3019,Tariff inquiry,Provide billing support,High,Yes,Support
+3020,New app download,Send payment reminder,High,Yes,Marketing
+3021,New app download,Send payment reminder,Medium,No,Support
+3022,Missed payment,Send re-engagement offer,Medium,Yes,Marketing
+3023,Missed payment,Send re-engagement offer,High,Yes,Support
+3024,Billing query,Send re-engagement offer,Medium,Yes,Marketing
