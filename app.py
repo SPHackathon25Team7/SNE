@@ -22,7 +22,7 @@ class BedrockNotificationGenerator:
             print(f"Warning: Could not initialize Bedrock client: {e}")
             self.bedrock_client = None
     
-    def analyze_customer_priority(self, customer_data, context_data=None):
+    def analyse_customer_priority(self, customer_data, context_data=None):
         """Use AI to determine customer contact priority and strategy"""
         if not self.bedrock_client:
             return self._fallback_priority_analysis(customer_data)
@@ -68,7 +68,14 @@ class BedrockNotificationGenerator:
         region = customer_data.get('Region', 'Unknown')
         
         prompt = f"""
-You are an AI customer engagement strategist for an energy supplier. Analyze this customer profile and determine the optimal contact strategy.
+You are an AI customer engagement strategist for a British energy supplier. Analyse this customer profile and determine the optimal contact strategy.
+
+CRITICAL RULES:
+- Use British English spelling and terminology throughout
+- NEVER invent or mention specific names of customers, staff, or departments
+- NEVER make up specific dates, times, reference numbers, or contact details
+- Base recommendations only on the actual customer data provided
+- Use general terms like "our team", "customer services", "billing department"
 
 Customer Profile:
 - Segment: {segment}
@@ -82,7 +89,7 @@ Customer Profile:
 
 Context: {context_data or 'General customer analysis'}
 
-Analyze this customer and provide your recommendation in this EXACT format:
+Analyse this customer and provide your recommendation in this EXACT format:
 
 PRIORITY: [HIGH/MEDIUM/LOW]
 URGENCY: [IMMEDIATE/WITHIN_24H/WITHIN_WEEK/ROUTINE]
@@ -97,6 +104,8 @@ Consider factors like:
 - Low engagement customers need re-engagement
 - Value Seekers respond to cost-saving opportunities
 - Support issues indicate potential dissatisfaction
+
+IMPORTANT: Use British English in your analysis (e.g., "recognised", "organised", "prioritise", "realise")
 """
         
         return prompt
@@ -224,7 +233,16 @@ Consider factors like:
         region = customer_data.get('Region', 'Unknown')
         
         base_prompt = f"""
-You are a smart notification system for an energy supplier. Create a personalized, engaging notification message.
+You are a smart notification system for a British energy supplier. Create a personalised, engaging notification message.
+
+CRITICAL RULES:
+- Use British English spelling and terminology throughout
+- NEVER invent or mention specific names of customers, staff members, or people
+- NEVER make up specific dates, times, or reference numbers
+- NEVER create fictional contact details or department names
+- Only use the actual data provided about this customer
+- Keep messages professional but friendly
+- Use "we" to refer to the energy supplier
 
 Customer Profile:
 - Segment: {segment}
@@ -238,11 +256,15 @@ Customer Profile:
             prompt = base_prompt + f"""
 Context: {context or 'Billing anomaly detected'}
 
-Create a professional, reassuring message about a billing issue. Keep it:
-- Empathetic and understanding
-- Clear about next steps
+Create a professional, reassuring message about a billing issue. Requirements:
+- Empathetic and understanding tone
+- Clear about next steps without being specific about dates/times
 - Appropriate for {segment} customers
+- Use British English (e.g., "recognised", "organised", "centre")
+- Do NOT mention specific staff names, departments, or reference numbers
+- Use generic terms like "our team", "customer services", "billing department"
 - Under 150 characters for SMS/email subject
+- End with a general instruction like "Please contact us" rather than specific numbers
 """
         
         elif notification_type == "energy_saving":
@@ -251,9 +273,12 @@ Context: High energy usage detected ({energy_usage} kWh/day)
 
 Create an engaging energy-saving tip message that:
 - Acknowledges their {segment} mindset
-- Provides actionable advice
+- Provides actionable, general advice (no specific product names or brands)
 - Mentions their {solar_ev} setup if relevant
 - Is encouraging, not judgmental
+- Uses British English terminology
+- Do NOT mention specific programmes, schemes, or staff names
+- Use general terms like "energy-saving tips", "efficiency measures"
 - Under 200 characters
 """
         
@@ -263,9 +288,12 @@ Context: Low campaign engagement detected
 
 Create a re-engagement message that:
 - Appeals to {segment} values
-- Offers relevant benefits
-- Feels personal, not generic
-- Encourages action
+- Offers relevant but general benefits (no specific offer amounts or dates)
+- Feels personal but doesn't use made-up names
+- Encourages action with general terms
+- Uses British English
+- Do NOT mention specific offers, percentages, or time-limited deals
+- Use phrases like "exclusive updates", "tailored information", "relevant offers"
 - Under 160 characters
 """
         
@@ -274,10 +302,13 @@ Create a re-engagement message that:
 Context: Special offer for Value Seekers segment
 
 Create a compelling offer message that:
-- Emphasizes cost savings and value
+- Emphasises cost savings and value in general terms
 - Mentions energy efficiency benefits
-- Includes urgency without being pushy
+- Includes gentle urgency without specific dates or deadlines
 - Appeals to practical mindset
+- Uses British English
+- Do NOT mention specific discount percentages, prices, or end dates
+- Use general terms like "potential savings", "efficiency opportunities", "value-focused options"
 - Under 180 characters
 """
         
@@ -286,12 +317,23 @@ Create a compelling offer message that:
 Context: Value Seeker with high energy usage ({energy_usage} kWh/day) - cost-saving opportunity
 
 Create a compelling energy-saving message that:
-- Emphasizes potential cost savings from reducing usage
-- Provides specific actionable tips
-- Mentions their current usage level
+- Emphasises potential cost savings from reducing usage (in general terms)
+- Provides actionable tips without mentioning specific products or brands
+- Mentions their current usage level ({energy_usage} kWh/day)
 - Appeals to their value-conscious mindset
-- Shows potential monthly savings
+- Uses British English
+- Do NOT mention specific savings amounts, percentages, or monetary figures
+- Use terms like "potential savings", "reduced bills", "efficiency improvements"
 - Under 180 characters
+"""
+        
+        prompt += """
+
+FINAL REQUIREMENTS:
+- Generate ONLY the notification message, no explanations or additional text
+- Use British English spelling throughout (e.g., realise, organised, centre, colour)
+- Do NOT include any made-up names, specific dates, reference numbers, or contact details
+- Keep the message professional, helpful, and appropriate for a British energy supplier
 """
         
         prompt += "\n\nGenerate ONLY the notification message, no explanations or additional text."
@@ -302,10 +344,11 @@ Create a compelling energy-saving message that:
         segment = customer_data.get('Segment', 'Unknown')
         
         fallback_messages = {
-            "billing_alert": f"We've detected a billing issue on your account. Our team is reviewing it and will contact you shortly.",
+            "billing_alert": f"We've recognised a billing issue on your account. Our team is reviewing it and will contact you shortly.",
             "energy_saving": f"Your energy usage is higher than average. Check out our energy-saving tips in your account dashboard.",
             "engagement": f"Don't miss out on exclusive offers and updates tailored for {segment} customers like you!",
-            "value_seeker_special": f"Limited time: Save up to 15% on your energy bills with our new efficiency program!"
+            "value_seeker_special": f"Discover potential savings on your energy bills with our efficiency programme!",
+            "value_seeker_energy_savings": f"Your current usage of {customer_data.get('Daily_Energy_Usage_kWh', 0)} kWh/day could be reduced. Explore our energy-saving tips for potential bill reductions."
         }
         
         return fallback_messages.get(notification_type, "Important update about your energy account.")
@@ -350,41 +393,45 @@ class SmartNotificationEngine:
         return self.df['Segment'].unique().tolist()
     
     def get_billing_anomalies(self):
-        """Get customers with billing anomalies"""
-        return self.df[self.df['Billing_Anomaly'] != 'None']
+        """Get Value Seekers customers with billing anomalies only"""
+        value_seekers = self.df[self.df['Segment'] == 'Value Seekers']
+        return value_seekers[value_seekers['Billing_Anomaly'] != 'None']
     
     def get_high_energy_users(self, threshold=25):
-        """Get customers with high daily energy usage"""
-        return self.df[self.df['Daily_Energy_Usage_kWh'] > threshold]
+        """Get Value Seekers customers with high daily energy usage only"""
+        value_seekers = self.df[self.df['Segment'] == 'Value Seekers']
+        return value_seekers[value_seekers['Daily_Energy_Usage_kWh'] > threshold]
     
     def get_low_engagement_customers(self, click_threshold=3, open_threshold=10):
-        """Get customers with low campaign engagement"""
-        return self.df[
-            (self.df['Campaign_Clicks'] <= click_threshold) & 
-            (self.df['Campaign_Opens'] <= open_threshold)
+        """Get Value Seekers customers with low campaign engagement only"""
+        value_seekers = self.df[self.df['Segment'] == 'Value Seekers']
+        return value_seekers[
+            (value_seekers['Campaign_Clicks'] <= click_threshold) & 
+            (value_seekers['Campaign_Opens'] <= open_threshold)
         ]
     
     def generate_unified_notifications(self):
-        """Unified AI workflow: Analyze customers → Prioritize → Generate targeted notifications"""
+        """Unified AI workflow: Analyze Value Seekers only → Prioritize → Generate targeted notifications"""
         notifications = []
         bedrock_generator = BedrockNotificationGenerator()
         
         print("🤖 Starting unified AI notification workflow...")
         
-        # Step 1: Analyze ALL customers with AI to determine who needs contact
-        all_customers = self.df.copy()
+        # Step 1: Filter to ONLY Value Seekers customers to save processing time
+        value_seekers_only = self.df[self.df['Segment'] == 'Value Seekers'].copy()
         customer_analyses = []
         
-        print(f"📊 Analyzing {len(all_customers)} customers for contact priority...")
+        print(f"🎯 Focusing on Value Seekers segment only")
+        print(f"📊 Analysing {len(value_seekers_only)} Value Seekers customers for contact priority...")
         
-        for _, customer in all_customers.iterrows():
+        for _, customer in value_seekers_only.iterrows():
             customer_data = customer.to_dict()
             
             # Determine context based on customer situation
             context = self._determine_customer_context(customer_data)
             
             # Get AI analysis for this customer
-            analysis = bedrock_generator.analyze_customer_priority(customer_data, context)
+            analysis = bedrock_generator.analyse_customer_priority(customer_data, context)
             analysis['customer_data'] = customer_data
             customer_analyses.append(analysis)
         
@@ -561,9 +608,10 @@ def dashboard():
 
 @app.route('/api/customers')
 def get_customers():
-    """Get all customers data"""
-    # Convert to dict and handle NaN values
-    customers = notification_engine.df.replace({np.nan: None}).to_dict('records')
+    """Get Value Seekers customers data only"""
+    # Filter to only Value Seekers and convert to dict
+    value_seekers = notification_engine.df[notification_engine.df['Segment'] == 'Value Seekers']
+    customers = value_seekers.replace({np.nan: None}).to_dict('records')
     return jsonify(customers)
 
 @app.route('/api/refresh-data', methods=['POST'])
@@ -585,16 +633,22 @@ def refresh_data():
 
 @app.route('/api/segments')
 def get_segments():
-    """Get customer segments summary"""
-    segments = notification_engine.df.groupby('Segment').agg({
-        'Customer_ID': 'count',
-        'Daily_Energy_Usage_kWh': 'mean',
-        'Campaign_Clicks': 'mean',
-        'Campaign_Opens': 'mean'
-    }).round(2)
+    """Get Value Seekers segment summary only"""
+    # Only return Value Seekers data
+    value_seekers = notification_engine.df[notification_engine.df['Segment'] == 'Value Seekers']
     
-    # Replace NaN values with 0 and convert to dict
-    segments = segments.fillna(0).to_dict('index')
+    if len(value_seekers) > 0:
+        segments = {
+            'Value Seekers': {
+                'Customer_ID': len(value_seekers),
+                'Daily_Energy_Usage_kWh': round(value_seekers['Daily_Energy_Usage_kWh'].mean(), 2),
+                'Campaign_Clicks': round(value_seekers['Campaign_Clicks'].mean(), 2),
+                'Campaign_Opens': round(value_seekers['Campaign_Opens'].mean(), 2)
+            }
+        }
+    else:
+        segments = {'Value Seekers': {'Customer_ID': 0, 'Daily_Energy_Usage_kWh': 0, 'Campaign_Clicks': 0, 'Campaign_Opens': 0}}
+    
     return jsonify(segments)
 
 @app.route('/api/notifications')
@@ -638,18 +692,19 @@ def get_value_seekers():
 
 @app.route('/api/customer-analysis')
 def get_customer_analysis():
-    """Get AI-powered customer analysis and prioritization"""
+    """Get AI-powered customer analysis and prioritisation for Value Seekers only"""
     try:
         bedrock_generator = BedrockNotificationGenerator()
         analyses = []
         
-        # Analyze a sample of customers for the dashboard
-        sample_customers = notification_engine.df.head(10)  # Limit for demo
+        # Analyze only Value Seekers customers
+        value_seekers_customers = notification_engine.df[notification_engine.df['Segment'] == 'Value Seekers']
+        print(f"🎯 Analysing {len(value_seekers_customers)} Value Seekers customers only")
         
-        for _, customer in sample_customers.iterrows():
+        for _, customer in value_seekers_customers.iterrows():
             customer_data = customer.to_dict()
             context = notification_engine._determine_customer_context(customer_data)
-            analysis = bedrock_generator.analyze_customer_priority(customer_data, context)
+            analysis = bedrock_generator.analyse_customer_priority(customer_data, context)
             
             analyses.append({
                 'customer_id': customer_data['Customer_ID'],

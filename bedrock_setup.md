@@ -56,13 +56,13 @@ except Exception as e:
 ## Features Added
 
 ### AI-Powered Notifications
-- **Personalized Messages**: Each notification is tailored to customer segment and behavior
+- **Personalised Messages**: Each notification is tailored to customer segment and behaviour
 - **Context-Aware**: Uses customer energy usage, solar/EV ownership, and region data
 - **Multiple Types**: Billing alerts, energy saving tips, engagement campaigns, Value Seeker offers
 
 ### Notification Types
 1. **Billing Alerts**: Empathetic, professional messages for billing issues
-2. **Energy Saving**: Personalized tips based on usage patterns and green tech ownership
+2. **Energy Saving**: Personalised tips based on usage patterns and green tech ownership
 3. **Engagement**: Re-engagement messages tailored to customer segment values
 4. **Value Seeker Specials**: Cost-focused offers for your target segment
 

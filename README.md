@@ -4,13 +4,13 @@ SPHackathon25Team7@outlook.com
 
 # Smart Notification Engine
 
-A Flask-based web application that analyzes energy supplier customer data and generates targeted notifications based on customer segments, billing issues, and engagement patterns.
+A Flask-based web application that analyses energy supplier customer data and generates targeted notifications based on customer segments, billing issues, and engagement patterns.
 
 ## Features
 
-- **Customer Segmentation Analysis**: Analyzes different customer types (Digital Natives, Eco Savers, Value Seekers, Traditionalists)
+- **Customer Segmentation Analysis**: Analyses different customer types (Digital Natives, Eco Savers, Value Seekers, Traditionalists)
 - **Billing Issue Detection**: Identifies customers with overcharges, missed payments, and disputes
-- **Smart Notifications**: Generates targeted notifications based on customer behavior and issues
+- **Smart Notifications**: Generates targeted notifications based on customer behaviour and issues
 - **Interactive Dashboard**: Web-based interface to view customer data and manage notifications
 - **Multiple Notification Channels**: Supports email, SMS, push notifications, and in-app notifications
 

@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -11,33 +12,33 @@
             padding: 0;
             box-sizing: border-box;
         }
-        
+
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background-color: #f5f5f5;
             color: #333;
         }
-        
+
         .header {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
             padding: 2rem;
             text-align: center;
         }
-        
+
         .container {
             max-width: 1200px;
             margin: 0 auto;
             padding: 2rem;
         }
-        
+
         .dashboard-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
             gap: 2rem;
             margin-bottom: 2rem;
         }
-        
+
         .card {
             background: white;
             border-radius: 10px;
@@ -45,18 +46,18 @@
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
             transition: transform 0.2s;
         }
-        
+
         .card:hover {
             transform: translateY(-2px);
         }
-        
+
         .card h3 {
             color: #667eea;
             margin-bottom: 1rem;
             border-bottom: 2px solid #eee;
             padding-bottom: 0.5rem;
         }
-        
+
         .btn {
             background: #667eea;
             color: white;
@@ -68,27 +69,27 @@
             transition: background 0.2s;
             margin: 0.5rem 0.5rem 0.5rem 0;
         }
-        
+
         .btn:hover {
             background: #5a6fd8;
         }
-        
+
         .btn-danger {
             background: #e74c3c;
         }
-        
+
         .btn-danger:hover {
             background: #c0392b;
         }
-        
+
         .btn-success {
             background: #27ae60;
         }
-        
+
         .btn-success:hover {
             background: #229954;
         }
-        
+
         .notification-item {
             background: #f8f9fa;
             border-left: 4px solid #667eea;
@@ -96,32 +97,32 @@
             margin: 0.5rem 0;
             border-radius: 0 5px 5px 0;
         }
-        
+
         .priority-high {
             border-left-color: #e74c3c;
         }
-        
+
         .priority-medium {
             border-left-color: #f39c12;
         }
-        
+
         .priority-low {
             border-left-color: #27ae60;
         }
-        
+
         .loading {
             text-align: center;
             padding: 2rem;
             color: #666;
         }
-        
+
         .stats-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
             gap: 1rem;
             margin-bottom: 2rem;
         }
-        
+
         .stat-card {
             background: white;
             padding: 1.5rem;
@@ -129,18 +130,18 @@
             text-align: center;
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         }
-        
+
         .stat-number {
             font-size: 2rem;
             font-weight: bold;
             color: #667eea;
         }
-        
+
         .stat-label {
             color: #666;
             margin-top: 0.5rem;
         }
-        
+
         .quick-actions {
             background: white;
             padding: 1.5rem;
@@ -149,52 +150,52 @@
             margin-bottom: 2rem;
             text-align: center;
         }
-        
+
         .quick-actions h3 {
             color: #667eea;
             margin-bottom: 1rem;
         }
-        
+
         .actions-row {
             display: flex;
             flex-wrap: wrap;
             justify-content: center;
             gap: 1rem;
         }
-        
+
         .chart-container {
             position: relative;
             height: 300px;
             margin-top: 1rem;
         }
-        
+
         .chart-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
             gap: 2rem;
             margin-bottom: 2rem;
         }
-        
+
         .chart-card {
             background: white;
             border-radius: 10px;
             padding: 1.5rem;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
         }
-        
+
         .chart-card h3 {
             color: #667eea;
             margin-bottom: 1rem;
             text-align: center;
         }
-        
+
         .value-seekers-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
             gap: 1rem;
             margin-bottom: 1.5rem;
         }
-        
+
         .value-seekers-metric {
             background: linear-gradient(135deg, #fff3cd 0%, #ffeaa7 100%);
             padding: 1.5rem;
@@ -202,39 +203,39 @@
             text-align: center;
             border-left: 4px solid #f39c12;
         }
-        
+
         .value-seekers-metric .metric-value {
             font-size: 2rem;
             font-weight: bold;
             color: #f39c12;
             margin-bottom: 0.5rem;
         }
-        
+
         .value-seekers-metric .metric-label {
             color: #856404;
             font-weight: 500;
         }
-        
+
         .insights-section {
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 1.5rem;
             margin-bottom: 1.5rem;
         }
-        
+
         .insight-card {
             background: #f8f9fa;
             padding: 1.5rem;
             border-radius: 8px;
             border-left: 4px solid #f39c12;
         }
-        
+
         .insight-card h4 {
             color: #f39c12;
             margin-bottom: 1rem;
             font-size: 1.1rem;
         }
-        
+
         .insight-item {
             display: flex;
             justify-content: space-between;
@@ -242,16 +243,16 @@
             padding: 0.5rem 0;
             border-bottom: 1px solid #e9ecef;
         }
-        
+
         .insight-item:last-child {
             border-bottom: none;
         }
-        
+
         .insight-label {
             color: #495057;
             font-weight: 500;
         }
-        
+
         .insight-value {
             color: #f39c12;
             font-weight: bold;
@@ -260,14 +261,14 @@
             border-radius: 15px;
             font-size: 0.9rem;
         }
-        
+
         .key-insights {
             background: linear-gradient(135deg, #e8f5e8 0%, #d4edda 100%);
             padding: 1.5rem;
             border-radius: 8px;
             border-left: 4px solid #28a745;
         }
-        
+
         .key-insights h4 {
             color: #28a745;
             margin-bottom: 1rem;
@@ -275,7 +276,7 @@
             align-items: center;
             gap: 0.5rem;
         }
-        
+
         .insight-point {
             display: flex;
             align-items: flex-start;
@@ -284,23 +285,23 @@
             background: rgba(255, 255, 255, 0.7);
             border-radius: 5px;
         }
-        
+
         .insight-point:last-child {
             margin-bottom: 0;
         }
-        
+
         .insight-icon {
             color: #28a745;
             margin-right: 0.75rem;
             margin-top: 0.1rem;
             font-weight: bold;
         }
-        
+
         .insight-text {
             color: #155724;
             line-height: 1.4;
         }
-        
+
         /* Tab System Styles */
         .tab-container {
             background: white;
@@ -308,7 +309,7 @@
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
             margin-bottom: 2rem;
         }
-        
+
         .tab-nav {
             display: flex;
             border-bottom: 2px solid #f1f3f4;
@@ -316,7 +317,7 @@
             border-radius: 10px 10px 0 0;
             overflow-x: auto;
         }
-        
+
         .tab-button {
             background: none;
             border: none;
@@ -329,58 +330,80 @@
             white-space: nowrap;
             border-bottom: 3px solid transparent;
         }
-        
+
         .tab-button:hover {
             background: #e9ecef;
             color: #495057;
         }
-        
+
         .tab-button.active {
             color: #667eea;
             background: white;
             border-bottom-color: #667eea;
         }
-        
+
         .tab-content {
             display: none;
             padding: 2rem;
             animation: fadeIn 0.3s ease-in;
         }
-        
+
         .tab-content.active {
             display: block;
         }
-        
+
         @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
-        
+
         .tab-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
             gap: 2rem;
         }
-        
+
         .tab-section {
             background: #f8f9fa;
             padding: 1.5rem;
             border-radius: 8px;
             border-left: 4px solid #667eea;
         }
-        
+
         .tab-section h4 {
             color: #667eea;
             margin-bottom: 1rem;
         }
+
+        .notifications-column {
+            min-height: 200px;
+        }
+
+        @media (max-width: 768px) {
+            .notifications-column {
+                grid-column: 1 / -1;
+            }
+
+            #notificationData .grid-template-columns {
+                grid-template-columns: 1fr !important;
+            }
+        }
     </style>
 </head>
+
 <body>
     <div class="header">
         <h1>Smart Notification Engine</h1>
         <p>Energy Supplier Customer Notification Dashboard</p>
     </div>
-    
+
     <div class="container">
         <!-- Quick Actions at the top -->
         <div class="quick-actions">
@@ -391,7 +414,7 @@
                 <button class="btn" onclick="switchTab('value-seekers')">🎯 Value Seekers</button>
             </div>
         </div>
-        
+
         <!-- Tabbed Interface -->
         <div class="tab-container">
             <div class="tab-nav">
@@ -399,14 +422,15 @@
                 <button class="tab-button" onclick="switchTab('value-seekers')">🎯 Value Seekers</button>
                 <button class="tab-button" onclick="switchTab('overview')">📊 Customer Data</button>
             </div>
-            
+
             <!-- Smart Notifications Tab (Now Default) -->
             <div id="notifications-tab" class="tab-content active">
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
                     <h3 style="color: #28a745; margin: 0;">📧 Smart Notifications & Prioritization</h3>
-                    <button class="btn" onclick="generateNotifications()" style="background: #28a745;">🤖 Analyze & Generate Notifications</button>
+                    <button class="btn" onclick="generateNotifications()" style="background: #28a745;">🤖 Analyse &
+                        Generate Notifications</button>
                 </div>
-                
+
                 <!-- Notification Stats -->
                 <div class="stats-grid" style="margin-bottom: 2rem;" id="notificationStats">
                     <div class="stat-card">
@@ -430,37 +454,44 @@
                         <div class="stat-label">Avg Risk Score</div>
                     </div>
                 </div>
-                
-                <div style="margin-bottom: 1rem; padding: 1rem; background: #d4edda; border-radius: 8px; border-left: 4px solid #28a745;">
-                    <h4 style="color: #155724; margin-bottom: 0.5rem;">🧠 AI-Powered Customer Engagement</h4>
+
+                <div
+                    style="margin-bottom: 1rem; padding: 1rem; background: #d4edda; border-radius: 8px; border-left: 4px solid #28a745;">
+                    <h4 style="color: #155724; margin-bottom: 0.5rem;">🎯 AI-Powered Value Seekers Engagement</h4>
                     <p style="margin: 0; color: #155724; font-size: 0.9rem;">
-                        AI analyzes all customers, identifies who needs contact, prioritizes by urgency & risk, then generates personalized notifications. 
-                        <strong>Most critical engagements appear first.</strong>
+                        AI analyses <strong>Value Seekers customers only</strong>, identifies who needs contact, prioritises by urgency & risk, then
+                        generates personalised notifications. <strong>Most critical engagements appear first.</strong> 
+                        Focusing on your target segment saves processing time and costs.
                     </p>
                 </div>
-                
+
                 <!-- Priority Filter Buttons -->
                 <div style="margin-bottom: 1rem; display: flex; gap: 0.5rem; flex-wrap: wrap;">
-                    <button class="btn" onclick="filterNotifications('all')" id="filter-all" style="background: #6c757d; font-size: 0.8rem;">All Notifications</button>
-                    <button class="btn" onclick="filterNotifications('high')" id="filter-high" style="background: #dc3545; font-size: 0.8rem;">🔴 Critical Only</button>
-                    <button class="btn" onclick="filterNotifications('medium')" id="filter-medium" style="background: #ffc107; color: #000; font-size: 0.8rem;">🟡 Important Only</button>
-                    <button class="btn" onclick="filterNotifications('low')" id="filter-low" style="background: #28a745; font-size: 0.8rem;">🟢 Routine Only</button>
+                    <button class="btn" onclick="filterNotifications('all')" id="filter-all"
+                        style="background: #6c757d; font-size: 0.8rem;">All Notifications</button>
+                    <button class="btn" onclick="filterNotifications('high')" id="filter-high"
+                        style="background: #dc3545; font-size: 0.8rem;">🔴 Critical Only</button>
+                    <button class="btn" onclick="filterNotifications('medium')" id="filter-medium"
+                        style="background: #ffc107; color: #000; font-size: 0.8rem;">🟡 Important Only</button>
+                    <button class="btn" onclick="filterNotifications('low')" id="filter-low"
+                        style="background: #28a745; font-size: 0.8rem;">🟢 Routine Only</button>
                 </div>
-                
-                <div id="notificationData" class="loading">Click "Analyze & Generate Notifications" to see AI-prioritized customer engagements</div>
+
+                <div id="notificationData" class="loading">Click "Analyse & Generate Notifications" to see
+                    AI-prioritised customer engagements</div>
             </div>
-            
+
             <!-- Overview Tab (Simplified) -->
             <div id="overview-tab" class="tab-content">
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
                     <h3 style="color: #667eea; margin: 0;">📊 Customer Data Overview</h3>
                 </div>
-                
+
                 <!-- Key Stats -->
                 <div class="stats-grid" style="margin-bottom: 2rem;">
                     <div class="stat-card">
                         <div class="stat-number" id="totalCustomers">-</div>
-                        <div class="stat-label">Total Customers</div>
+                        <div class="stat-label">Value Seekers</div>
                     </div>
                     <div class="stat-card">
                         <div class="stat-number" id="billingIssues">-</div>
@@ -468,30 +499,31 @@
                     </div>
                     <div class="stat-card">
                         <div class="stat-number" id="valueSeekers">-</div>
-                        <div class="stat-label">Value Seekers</div>
+                        <div class="stat-label">Active Customers</div>
                     </div>
                 </div>
-                
+
                 <div class="tab-grid">
                     <div class="tab-section">
                         <h4>Customer Segments</h4>
                         <div id="segmentData" class="loading">Loading segments...</div>
                     </div>
-                    
+
                     <div class="tab-section">
                         <h4>Billing Issues</h4>
                         <div id="billingData" class="loading">Loading billing issues...</div>
                     </div>
                 </div>
             </div>
-            
 
-            
+
+
             <!-- Value Seekers Tab -->
             <div id="value-seekers-tab" class="tab-content">
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
                     <h3 style="color: #f39c12; margin: 0;">🎯 Value Seekers Focus (Target Segment)</h3>
-                    <button class="btn" onclick="generateValueSeekerNotifications()" style="background: #f39c12;">🎯 Generate Value Seeker Campaigns</button>
+                    <button class="btn" onclick="generateValueSeekerNotifications()" style="background: #f39c12;">🎯
+                        Generate Value Seeker Campaigns</button>
                 </div>
                 <div id="valueSeekerData" class="loading">Loading Value Seekers analysis...</div>
             </div>
@@ -501,17 +533,17 @@
     <script>
         // Chart instances
         let segmentChart, energyChart, billingChart, ownershipChart;
-        
+
         // Load initial data
-        document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('DOMContentLoaded', function () {
             loadStats();
             loadSegments();
             loadBillingIssues();
             loadValueSeekers();
-            
+
             // Set notifications as default tab
             switchTab('notifications');
-            
+
             // Set default filter
             document.getElementById('filter-all').style.opacity = '1';
         });
@@ -520,14 +552,14 @@
             try {
                 const customersResponse = await fetch('/api/customers');
                 const customers = await customersResponse.json();
-                
+
                 const billingResponse = await fetch('/api/billing-issues');
                 const billingIssues = await billingResponse.json();
-                
-                // Count Value Seekers
-                const valueSeekerCount = customers.filter(customer => customer.Segment === 'Value Seekers').length;
-                
-                document.getElementById('totalCustomers').textContent = customers.length;
+
+                // All customers returned are now Value Seekers only
+                const valueSeekerCount = customers.length;
+
+                document.getElementById('totalCustomers').textContent = `${customers.length} (Value Seekers Only)`;
                 document.getElementById('billingIssues').textContent = billingIssues.length;
                 document.getElementById('valueSeekers').textContent = valueSeekerCount;
             } catch (error) {
@@ -542,7 +574,7 @@
             try {
                 const response = await fetch('/api/segments');
                 const segments = await response.json();
-                
+
                 let html = '';
                 for (const [segment, data] of Object.entries(segments)) {
                     html += `
@@ -552,7 +584,7 @@
                         </div>
                     `;
                 }
-                
+
                 document.getElementById('segmentData').innerHTML = html;
             } catch (error) {
                 document.getElementById('segmentData').innerHTML = 'Error loading segments';
@@ -564,7 +596,7 @@
             try {
                 const response = await fetch('/api/billing-issues');
                 const issues = await response.json();
-                
+
                 let html = '';
                 issues.slice(0, 5).forEach(issue => {
                     html += `
@@ -574,11 +606,11 @@
                         </div>
                     `;
                 });
-                
+
                 if (issues.length === 0) {
                     html = '<p>No billing issues found</p>';
                 }
-                
+
                 document.getElementById('billingData').innerHTML = html;
             } catch (error) {
                 document.getElementById('billingData').innerHTML = 'Error loading billing issues';
@@ -590,21 +622,21 @@
         let allNotifications = [];
 
         async function generateNotifications() {
-            document.getElementById('notificationData').innerHTML = '<div class="loading">🤖 AI is analyzing customers and generating prioritized notifications...</div>';
-            
+            document.getElementById('notificationData').innerHTML = '<div class="loading">🤖 AI is analysing customers and generating prioritised notifications...</div>';
+
             try {
                 const response = await fetch('/api/notifications');
                 const notifications = await response.json();
-                
+
                 // Store notifications for filtering
                 allNotifications = notifications;
-                
+
                 // Update notification stats
                 updateNotificationStats(notifications);
-                
+
                 // Display notifications (sorted by priority and risk)
                 displayNotifications(notifications);
-                
+
             } catch (error) {
                 document.getElementById('notificationData').innerHTML = 'Error generating notifications';
                 console.error('Error:', error);
@@ -617,67 +649,100 @@
                 const priorityOrder = { 'high': 3, 'medium': 2, 'low': 1 };
                 const aPriority = priorityOrder[a.priority] || 0;
                 const bPriority = priorityOrder[b.priority] || 0;
-                
+
                 if (aPriority !== bPriority) {
                     return bPriority - aPriority; // Higher priority first
                 }
-                
+
                 return (b.risk_score || 0) - (a.risk_score || 0); // Higher risk first within same priority
             });
 
             let html = '';
-            
+
             if (sortedNotifications.length === 0) {
-                html = '<div style="text-align: center; padding: 2rem; color: #666;">No notifications generated. All customers are in good standing.</div>';
+                html = '<div style="text-align: centre; padding: 2rem; color: #666;">No notifications generated. All customers are in good standing.</div>';
             } else {
-                sortedNotifications.forEach((notification, index) => {
-                    const priorityIcon = notification.priority === 'high' ? '🔴' : 
-                                       notification.priority === 'medium' ? '🟡' : '🟢';
-                    const priorityLabel = notification.priority === 'high' ? 'CRITICAL' : 
-                                        notification.priority === 'medium' ? 'IMPORTANT' : 'ROUTINE';
-                    
-                    html += `
-                        <div class="notification-item priority-${notification.priority}" data-priority="${notification.priority}" style="margin-bottom: 1rem;">
-                            <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 0.75rem;">
-                                <div>
-                                    <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.25rem;">
-                                        <span style="font-size: 1.1rem;">${priorityIcon}</span>
-                                        <strong style="font-size: 1.1rem;">Customer ${notification.customer_id}</strong>
-                                        <span style="color: #666; font-size: 0.9rem;">(${notification.segment})</span>
-                                        <span style="background: ${notification.priority === 'high' ? '#dc3545' : notification.priority === 'medium' ? '#ffc107' : '#28a745'}; color: ${notification.priority === 'medium' ? '#000' : 'white'}; padding: 0.2rem 0.5rem; border-radius: 12px; font-size: 0.7rem; font-weight: bold;">
-                                            ${priorityLabel}
-                                        </span>
-                                    </div>
-                                    ${notification.risk_score ? `<div style="margin-bottom: 0.5rem;"><small style="background: ${notification.risk_score > 7 ? '#dc3545' : notification.risk_score > 4 ? '#ffc107' : '#28a745'}; color: white; padding: 0.2rem 0.5rem; border-radius: 3px; font-weight: bold;">Risk Score: ${notification.risk_score}/10</small></div>` : ''}
+                // Split notifications into two columns
+                const midPoint = Math.ceil(sortedNotifications.length / 2);
+                const leftColumn = sortedNotifications.slice(0, midPoint);
+                const rightColumn = sortedNotifications.slice(midPoint);
+
+                html = `
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; align-items: start;">
+                        <div class="notifications-column">
+                            <h4 style="color: #667eea; margin-bottom: 1rem; text-align: centre; padding: 0.5rem; background: #f8f9fa; border-radius: 5px;">
+                                📋 Priority Notifications (1-${midPoint})
+                            </h4>
+                            ${generateNotificationCards(leftColumn, 0)}
+                        </div>
+                        <div class="notifications-column">
+                            <h4 style="color: #667eea; margin-bottom: 1rem; text-align: centre; padding: 0.5rem; background: #f8f9fa; border-radius: 5px;">
+                                📋 Additional Notifications (${midPoint + 1}-${sortedNotifications.length})
+                            </h4>
+                            ${generateNotificationCards(rightColumn, midPoint)}
+                        </div>
+                    </div>
+                `;
+            }
+
+            document.getElementById('notificationData').innerHTML = html;
+        }
+
+        function generateNotificationCards(notifications, startIndex) {
+            let html = '';
+
+            notifications.forEach((notification, index) => {
+                const actualIndex = startIndex + index;
+                const priorityIcon = notification.priority === 'high' ? '🔴' :
+                    notification.priority === 'medium' ? '🟡' : '🟢';
+                const priorityLabel = notification.priority === 'high' ? 'CRITICAL' :
+                    notification.priority === 'medium' ? 'IMPORTANT' : 'ROUTINE';
+
+                html += `
+                    <div class="notification-item priority-${notification.priority}" data-priority="${notification.priority}" style="margin-bottom: 1rem;">
+                        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 0.75rem;">
+                            <div>
+                                <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.25rem; flex-wrap: wrap;">
+                                    <span style="font-size: 1rem;">${priorityIcon}</span>
+                                    <strong style="font-size: 1rem;">Customer ${notification.customer_id}</strong>
+                                    <span style="color: #666; font-size: 0.8rem;">(${notification.segment})</span>
                                 </div>
-                                <div style="text-align: right; font-size: 0.8rem; color: #666;">
-                                    <div><strong>Urgency:</strong> ${notification.urgency ? notification.urgency.replace(/_/g, ' ') : 'Standard'}</div>
-                                    <div><strong>Channel:</strong> ${notification.channel}</div>
+                                <div style="margin-bottom: 0.5rem;">
+                                    <span style="background: ${notification.priority === 'high' ? '#dc3545' : notification.priority === 'medium' ? '#ffc107' : '#28a745'}; color: ${notification.priority === 'medium' ? '#000' : 'white'}; padding: 0.2rem 0.5rem; border-radius: 12px; font-size: 0.7rem; font-weight: bold; margin-right: 0.5rem;">
+                                        ${priorityLabel}
+                                    </span>
+                                    ${notification.risk_score ? `<span style="background: ${notification.risk_score > 7 ? '#dc3545' : notification.risk_score > 4 ? '#ffc107' : '#28a745'}; color: white; padding: 0.2rem 0.5rem; border-radius: 3px; font-size: 0.7rem; font-weight: bold;">Risk: ${notification.risk_score}/10</span>` : ''}
                                 </div>
                             </div>
-                            
-                            <div style="margin-bottom: 0.75rem; font-weight: 500; color: #333; padding: 1rem; background: #f8f9fa; border-radius: 8px; border-left: 4px solid ${notification.priority === 'high' ? '#dc3545' : notification.priority === 'medium' ? '#ffc107' : '#28a745'};">
-                                <div style="font-size: 0.8rem; color: #666; margin-bottom: 0.5rem; text-transform: uppercase; font-weight: bold;">AI-Generated Message:</div>
-                                "${notification.message}"
-                            </div>
-                            
-                            ${notification.should_contact_reason ? `<div style="margin-bottom: 0.5rem; font-size: 0.85rem; color: #495057; background: #e9ecef; padding: 0.75rem; border-radius: 5px;"><strong>🎯 Why Contact:</strong> ${notification.should_contact_reason}</div>` : ''}
-                            
-                            ${notification.contact_strategy ? `<div style="margin-bottom: 0.75rem; font-size: 0.85rem; color: #495057;"><strong>📋 Strategy:</strong> ${notification.contact_strategy}</div>` : ''}
-                            
-                            <div style="display: flex; justify-content: space-between; align-items: center; padding-top: 0.5rem; border-top: 1px solid #dee2e6;">
-                                <small style="color: #666;">Type: ${notification.type} | Rank: #${index + 1}</small>
-                                <button class="btn" style="padding: 0.5rem 1rem; font-size: 0.85rem; font-weight: bold;" 
-                                        onclick="sendNotification(${notification.customer_id}, '${notification.message.replace(/'/g, "\\'")}', '${notification.channel}')">
-                                    📤 Send Now
-                                </button>
+                            <div style="text-align: right; font-size: 0.75rem; color: #666;">
+                                <div><strong>Rank:</strong> #${actualIndex + 1}</div>
+                                <div><strong>Channel:</strong> ${notification.channel}</div>
                             </div>
                         </div>
-                    `;
-                });
-            }
-            
-            document.getElementById('notificationData').innerHTML = html;
+                        
+                        <div style="margin-bottom: 0.75rem; font-weight: 500; color: #333; padding: 0.75rem; background: #f8f9fa; border-radius: 6px; border-left: 3px solid ${notification.priority === 'high' ? '#dc3545' : notification.priority === 'medium' ? '#ffc107' : '#28a745'};">
+                            <div style="font-size: 0.7rem; color: #666; margin-bottom: 0.5rem; text-transform: uppercase; font-weight: bold;">AI Message:</div>
+                            <div style="font-size: 0.9rem;">"${notification.message}"</div>
+                        </div>
+                        
+                        ${notification.should_contact_reason ? `<div style="margin-bottom: 0.5rem; font-size: 0.8rem; color: #495057; background: #e9ecef; padding: 0.5rem; border-radius: 4px;"><strong>🎯 Why:</strong> ${notification.should_contact_reason}</div>` : ''}
+                        
+                        ${notification.contact_strategy ? `<div style="margin-bottom: 0.75rem; font-size: 0.8rem; color: #495057;"><strong>📋 Strategy:</strong> ${notification.contact_strategy}</div>` : ''}
+                        
+                        <div style="display: flex; justify-content: space-between; align-items: center; padding-top: 0.5rem; border-top: 1px solid #dee2e6;">
+                            <small style="color: #666; font-size: 0.75rem;">
+                                ${notification.urgency ? notification.urgency.replace(/_/g, ' ') : 'Standard'}
+                            </small>
+                            <button class="btn" style="padding: 0.4rem 0.8rem; font-size: 0.8rem; font-weight: bold;" 
+                                    onclick="sendNotification(${notification.customer_id}, '${notification.message.replace(/'/g, "\\'")}', '${notification.channel}')">
+                                📤 Send
+                            </button>
+                        </div>
+                    </div>
+                `;
+            });
+
+            return html;
         }
 
         function updateNotificationStats(notifications) {
@@ -685,10 +750,10 @@
             const highPriority = notifications.filter(n => n.priority === 'high').length;
             const mediumPriority = notifications.filter(n => n.priority === 'medium').length;
             const lowPriority = notifications.filter(n => n.priority === 'low').length;
-            
-            const avgRisk = notifications.length > 0 ? 
+
+            const avgRisk = notifications.length > 0 ?
                 (notifications.reduce((sum, n) => sum + (n.risk_score || 0), 0) / notifications.length).toFixed(1) : 0;
-            
+
             document.getElementById('totalNotifications').textContent = total;
             document.getElementById('highPriorityCount').textContent = highPriority;
             document.getElementById('mediumPriorityCount').textContent = mediumPriority;
@@ -704,15 +769,15 @@
             });
             document.getElementById(`filter-${priority}`).style.opacity = '1';
             document.getElementById(`filter-${priority}`).style.transform = 'scale(1)';
-            
+
             let filteredNotifications = allNotifications;
-            
+
             if (priority !== 'all') {
                 filteredNotifications = allNotifications.filter(n => n.priority === priority);
             }
-            
+
             displayNotifications(filteredNotifications);
-            
+
             // Update stats for filtered view
             updateNotificationStats(filteredNotifications);
         }
@@ -738,7 +803,7 @@
                         channel: channel
                     })
                 });
-                
+
                 const result = await response.json();
                 alert(`Notification sent to customer ${customerId} via ${channel}`);
             } catch (error) {
@@ -752,7 +817,7 @@
                 // Show loading state
                 document.getElementById('segmentData').innerHTML = '<div class="loading">Refreshing data...</div>';
                 document.getElementById('billingData').innerHTML = '<div class="loading">Refreshing data...</div>';
-                
+
                 // Call the refresh endpoint to reload CSV data
                 const refreshResponse = await fetch('/api/refresh-data', {
                     method: 'POST',
@@ -760,9 +825,9 @@
                         'Content-Type': 'application/json',
                     }
                 });
-                
+
                 const refreshResult = await refreshResponse.json();
-                
+
                 if (refreshResult.status === 'success') {
                     // Reload all dashboard data
                     await loadStats();
@@ -771,11 +836,11 @@
                     await loadValueSeekers();
                     await loadCustomerAnalysis();
                     await loadCharts();
-                    
+
                     // Clear any existing notifications
                     document.getElementById('notificationData').innerHTML = 'Click "Generate Notifications" to see AI-prioritized notifications';
                     document.getElementById('pendingNotifications').textContent = '0';
-                    
+
                     alert(`Data refreshed successfully! Loaded ${refreshResult.total_customers} customers.`);
                 } else {
                     alert(`Error refreshing data: ${refreshResult.message}`);
@@ -783,7 +848,7 @@
             } catch (error) {
                 alert('Error refreshing data. Please try again.');
                 console.error('Error:', error);
-                
+
                 // Restore loading state on error
                 document.getElementById('segmentData').innerHTML = 'Error loading segments';
                 document.getElementById('billingData').innerHTML = 'Error loading billing issues';
@@ -802,7 +867,7 @@
             try {
                 const response = await fetch('/api/value-seekers');
                 const data = await response.json();
-                
+
                 let html = `
                     <!-- Key Metrics Grid -->
                     <div class="value-seekers-grid">
@@ -829,7 +894,7 @@
                         <div class="insight-card">
                             <h4>🔋 Solar/EV Ownership</h4>
                 `;
-                
+
                 for (const [ownership, count] of Object.entries(data.solar_ev_breakdown)) {
                     html += `
                         <div class="insight-item">
@@ -838,13 +903,13 @@
                         </div>
                     `;
                 }
-                
+
                 html += `
                         </div>
                         <div class="insight-card">
                             <h4>💳 Billing Issues</h4>
                 `;
-                
+
                 for (const [issue, count] of Object.entries(data.billing_issues)) {
                     html += `
                         <div class="insight-item">
@@ -853,7 +918,7 @@
                         </div>
                     `;
                 }
-                
+
                 html += `
                         </div>
                     </div>
@@ -879,7 +944,7 @@
                         </div>
                     </div>
                 `;
-                
+
                 document.getElementById('valueSeekerData').innerHTML = html;
             } catch (error) {
                 document.getElementById('valueSeekerData').innerHTML = 'Error loading Value Seekers data';
@@ -890,10 +955,10 @@
         async function loadCustomerAnalysis() {
             try {
                 document.getElementById('customerAnalysisData').innerHTML = '<div class="loading">AI is analyzing customers...</div>';
-                
+
                 const response = await fetch('/api/customer-analysis');
                 const analyses = await response.json();
-                
+
                 let html = `
                     <div style="margin-bottom: 1rem; padding: 1rem; background: #e8f4fd; border-radius: 8px; border-left: 4px solid #667eea;">
                         <h4 style="color: #667eea; margin-bottom: 0.5rem;">🎯 AI Prioritization Results</h4>
@@ -902,13 +967,13 @@
                     
                     <div style="display: grid; gap: 0.75rem;">
                 `;
-                
+
                 analyses.slice(0, 8).forEach((analysis, index) => {
-                    const priorityColor = analysis.priority === 'high' ? '#dc3545' : 
-                                        analysis.priority === 'medium' ? '#ffc107' : '#28a745';
-                    const riskColor = analysis.risk_score > 7 ? '#dc3545' : 
-                                     analysis.risk_score > 4 ? '#ffc107' : '#28a745';
-                    
+                    const priorityColor = analysis.priority === 'high' ? '#dc3545' :
+                        analysis.priority === 'medium' ? '#ffc107' : '#28a745';
+                    const riskColor = analysis.risk_score > 7 ? '#dc3545' :
+                        analysis.risk_score > 4 ? '#ffc107' : '#28a745';
+
                     html += `
                         <div style="background: white; padding: 1rem; border-radius: 8px; border-left: 4px solid ${priorityColor}; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
                             <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 0.5rem;">
@@ -937,13 +1002,13 @@
                         </div>
                     `;
                 });
-                
+
                 html += '</div>';
-                
+
                 if (analyses.length === 0) {
                     html = '<p>No customer analysis available. AI service may be unavailable.</p>';
                 }
-                
+
                 document.getElementById('customerAnalysisData').innerHTML = html;
             } catch (error) {
                 document.getElementById('customerAnalysisData').innerHTML = 'Error loading AI customer analysis. AI service may be unavailable.';
@@ -958,25 +1023,25 @@
             tabContents.forEach(content => {
                 content.classList.remove('active');
             });
-            
+
             // Remove active class from all tab buttons
             const tabButtons = document.querySelectorAll('.tab-button');
             tabButtons.forEach(button => {
                 button.classList.remove('active');
             });
-            
+
             // Show selected tab content
             const selectedTab = document.getElementById(tabName + '-tab');
             if (selectedTab) {
                 selectedTab.classList.add('active');
             }
-            
+
             // Add active class to clicked button
             const clickedButton = event ? event.target : document.querySelector(`[onclick="switchTab('${tabName}')"]`);
             if (clickedButton) {
                 clickedButton.classList.add('active');
             }
-            
+
             // Load data for specific tabs if needed
             if (tabName === 'value-seekers') {
                 // Refresh Value Seekers data if needed
@@ -990,10 +1055,10 @@
             try {
                 const customersResponse = await fetch('/api/customers');
                 const customers = await customersResponse.json();
-                
+
                 const segmentsResponse = await fetch('/api/segments');
                 const segments = await segmentsResponse.json();
-                
+
                 // Create charts
                 createSegmentChart(segments);
                 createEnergyChart(segments);
@@ -1006,14 +1071,14 @@
 
         function createSegmentChart(segments) {
             const ctx = document.getElementById('segmentChart').getContext('2d');
-            
+
             if (segmentChart) {
                 segmentChart.destroy();
             }
-            
+
             const labels = Object.keys(segments);
             const data = Object.values(segments).map(s => s.Customer_ID);
-            
+
             segmentChart = new Chart(ctx, {
                 type: 'doughnut',
                 data: {
@@ -1044,14 +1109,14 @@
 
         function createEnergyChart(segments) {
             const ctx = document.getElementById('energyChart').getContext('2d');
-            
+
             if (energyChart) {
                 energyChart.destroy();
             }
-            
+
             const labels = Object.keys(segments);
             const data = Object.values(segments).map(s => s.Daily_Energy_Usage_kWh);
-            
+
             energyChart = new Chart(ctx, {
                 type: 'bar',
                 data: {
@@ -1078,20 +1143,20 @@
 
         function createBillingChart(customers) {
             const ctx = document.getElementById('billingChart').getContext('2d');
-            
+
             if (billingChart) {
                 billingChart.destroy();
             }
-            
+
             const billingCounts = customers.reduce((acc, customer) => {
                 const anomaly = customer.Billing_Anomaly || 'None';
                 acc[anomaly] = (acc[anomaly] || 0) + 1;
                 return acc;
             }, {});
-            
+
             const labels = Object.keys(billingCounts);
             const data = Object.values(billingCounts);
-            
+
             billingChart = new Chart(ctx, {
                 type: 'pie',
                 data: {
@@ -1122,20 +1187,20 @@
 
         function createOwnershipChart(customers) {
             const ctx = document.getElementById('ownershipChart').getContext('2d');
-            
+
             if (ownershipChart) {
                 ownershipChart.destroy();
             }
-            
+
             const ownershipCounts = customers.reduce((acc, customer) => {
                 const ownership = customer.Solar_EV_Ownership || 'None';
                 acc[ownership] = (acc[ownership] || 0) + 1;
                 return acc;
             }, {});
-            
+
             const labels = Object.keys(ownershipCounts);
             const data = Object.values(ownershipCounts);
-            
+
             ownershipChart = new Chart(ctx, {
                 type: 'bar',
                 data: {
@@ -1165,4 +1230,5 @@
         }
     </script>
 </body>
+
 </html>
