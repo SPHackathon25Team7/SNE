@@ -24,37 +24,29 @@ class BedrockNotificationGenerator:
             self.bedrock_client = None
     
     def analyse_customer_priority(self, customer_data):
-        """Use AI to determine customer contact priority and strategy"""
-        if not self.bedrock_client:
-            return self._fallback_priority_analysis(customer_data)
+        """Use AI to determine customer contact priority and strategy with proactive approach"""
+        prompt = self._build_priority_prompt(customer_data)
         
-        try:
-            prompt = self._build_priority_prompt(customer_data)
-            
-            body = json.dumps({
-                "anthropic_version": "bedrock-2023-05-31",
-                "max_tokens": 400,
-                "messages": [
-                    {
-                        "role": "user",
-                        "content": prompt
-                    }
-                ]
-            })
-            
-            response = self.bedrock_client.invoke_model(
-                modelId=self.model_id,
-                body=body
-            )
-            
-            response_body = json.loads(response['body'].read())
-            ai_response = response_body['content'][0]['text'].strip()
-            
-            return self._parse_priority_response(ai_response)
-            
-        except Exception as e:
-            print(f"Priority analysis error: {e}")
-            return self._fallback_priority_analysis(customer_data)
+        body = json.dumps({
+            "anthropic_version": "bedrock-2023-05-31",
+            "max_tokens": 500,
+            "messages": [
+                {
+                    "role": "user",
+                    "content": prompt
+                }
+            ]
+        })
+        
+        response = self.bedrock_client.invoke_model(
+            modelId=self.model_id,
+            body=body
+        )
+        
+        response_body = json.loads(response['body'].read())
+        ai_response = response_body['content'][0]['text'].strip()
+        
+        return self._parse_priority_response(ai_response)
     
     def _build_priority_prompt(self, customer_data):
         """Build comprehensive prompt for AI priority analysis using all available data"""
@@ -168,47 +160,79 @@ VALUE SEEKERS SEGMENT CHARACTERISTICS:
 - Income level ({income_bracket}) affects price sensitivity and switching likelihood
 - Tenure ({account_tenure} years) indicates {"strong" if account_tenure > 3 else "moderate" if account_tenure > 1 else "new"} relationship with ScottishPower
 
-Provide your analysis in this EXACT format:
+Provide your analysis in this EXACT format (ALL FIELDS ARE REQUIRED):
 
 PRIORITY: [HIGH/MEDIUM/LOW]
 URGENCY: [IMMEDIATE/WITHIN_24H/WITHIN_WEEK/ROUTINE]
-RISK_SCORE: [1-10 scale where 10 is highest risk]
+RISK_SCORE: [Single number from 1-10 where 10 is highest risk. Examples: 3, 7, 9]
 CONTACT_REASON: [Detailed explanation of why this customer needs contact - what specific issue or opportunity requires attention]
-TRIGGER_FACTORS: [Specific data points that led to this recommendation - be very specific about what data triggered this]
+TRIGGER_FACTORS: [MANDATORY FIELD - You MUST provide specific data points from the customer profile that triggered this recommendation. Be very specific with actual numbers and dates. Examples: "Churn risk 85% + satisfaction score 2/10 + last login 45 days ago", "3 unresolved billing complaints since January + engagement score 12%", "5 unopened payment reminders + previous late payment history", "Account tenure 4 years but satisfaction dropped from 8 to 3 in last quarter"]
 POTENTIAL_IMPACT: [What could happen if this customer isn't contacted - business impact]
 
 CUSTOMER_INSIGHTS: [Personality traits, motivations, and communication preferences based on Value Seekers profile and actual behavior data]
 COMMUNICATION_STYLE: [Recommended tone and approach - direct/empathetic/technical/consultative]
 CONVERSATION_STARTERS: [Specific opening lines or key points to mention when contacting]
 
-RESOLUTION_STRATEGY: [Primary recommended approach with specific steps based on their interaction patterns]
-ALTERNATIVE_APPROACH: [Backup strategy if primary approach doesn't work]
-SUCCESS_INDICATORS: [How to measure if the interaction was successful]
-FOLLOW_UP_TIMING: [When and how to follow up after initial contact]
+CRITICAL REQUIREMENTS:
+1. TRIGGER_FACTORS is MANDATORY - You MUST analyze the customer data and identify specific trigger factors
+2. Use actual data points from the customer profile (churn risk %, satisfaction scores, interaction dates, etc.)
+3. Be specific with numbers, percentages, and timeframes
+4. If no obvious triggers exist, state "Routine review cycle - no immediate risk factors identified"
+5. NEVER leave TRIGGER_FACTORS empty or use generic placeholder text
+
+TRIGGER FACTOR EXAMPLES TO FOLLOW:
+- "Churn risk 78% + satisfaction score 3/10 + 2 unresolved billing issues"
+- "Engagement score 18% + 6 unopened notifications in last month + last login 21 days ago"
+- "Previous payment difficulties in Q1 + upcoming billing cycle + income bracket: Low"
+- "Account status: At Risk + 3 negative sentiment interactions + no recent activity"
+
+PROACTIVE ENGAGEMENT STRATEGY:
+Focus on preventing issues before they escalate, especially for Value Seekers who are price-sensitive:
+
+PROACTIVE BILLING SUPPORT:
+- Previous billing issues + upcoming billing cycle = proactive payment support
+- Payment difficulties in past + current financial stress indicators = early intervention
+- High usage patterns + Value Seekers segment = proactive cost management advice
+- Seasonal usage changes + budget concerns = advance planning support
+
+RETENTION PREVENTION:
+- Early warning signs (satisfaction dropping, engagement declining) = proactive value demonstration
+- Contract renewal approaching + any service issues = retention conversation
+- Competitor activity in area + customer concerns = proactive competitive response
+- Service quality issues + Value Seekers expectations = immediate resolution focus
 
 COMPREHENSIVE TRIGGER FACTOR ANALYSIS:
-Consider these specific data patterns for trigger identification:
 - Churn Risk Factors: High churn risk (>70%), "At Risk" status, low satisfaction scores (<5)
 - Engagement Issues: Low engagement (<30%), unopened notifications (>70%), no recent logins
 - Service Issues: Unresolved complaints, billing problems, negative sentiment interactions
 - Behavioral Changes: Reduced activity, unsubscribe requests, failed notification deliveries
-- Opportunity Indicators: High-value customers with low engagement, tenure >2 years with issues
+- Proactive Opportunities: Previous payment struggles + upcoming bills, seasonal usage changes
+- Value Demonstration: High-value customers with declining satisfaction, cost concerns
 - Urgency Escalators: Multiple unresolved issues, high urgency recommended actions, recent complaints
 - Value Seekers Specific: Income bracket vs subscription mismatch, payment-related interactions
 - Retention Risks: Multiple negative interactions, unsubscribe requests, dormant accounts
 
-Priority Guidelines:
-- HIGH: Churn risk >70% OR multiple unresolved issues OR recent unsubscribe requests OR satisfaction <3
-- MEDIUM: Churn risk 40-70% OR low engagement <30% OR billing issues OR high urgency actions
-- LOW: Stable metrics with routine maintenance needs OR proactive relationship building
+PROACTIVE PRIORITY GUIDELINES:
+- HIGH: Churn risk >70% OR previous billing struggles + upcoming cycle OR satisfaction <3 OR multiple unresolved issues
+- MEDIUM: Churn risk 40-70% OR declining engagement trends OR seasonal usage concerns OR proactive value opportunities
+- LOW: Stable metrics with proactive relationship building OR seasonal check-ins OR value reinforcement
+
+PROACTIVE MESSAGING FOCUS:
+- Reach out BEFORE problems occur (pre-bill support, seasonal advice, usage alerts)
+- Address Value Seekers concerns about costs BEFORE they become complaints
+- Provide solutions and support BEFORE customers ask for help
+- Demonstrate ongoing value BEFORE satisfaction drops
 
 Use British English throughout (realise, organised, prioritise, centre, colour).
 """
+        #print(prompt)
         return prompt
     
     def _parse_priority_response(self, ai_response):
-        """Parse comprehensive AI response into structured data"""
+        """Parse AI response into structured data"""
         try:
+            print(f"🔍 DEBUG: Raw AI Response:\n{ai_response}\n" + "="*50)
+            
             lines = ai_response.strip().split('\n')
             result = {
                 'priority': 'medium',
@@ -219,12 +243,10 @@ Use British English throughout (realise, organised, prioritise, centre, colour).
                 'potential_impact': 'Minimal impact if not addressed',
                 'customer_insights': 'Value-conscious customer who appreciates practical solutions',
                 'communication_style': 'Professional and straightforward',
-                'conversation_starters': 'Hello, we wanted to check how your energy service is working for you',
-                'resolution_strategy': 'Standard engagement approach focusing on value',
-                'alternative_approach': 'Follow up via preferred channel if initial contact unsuccessful',
-                'success_indicators': 'Customer expresses satisfaction and engagement',
-                'follow_up_timing': 'Follow up in 1-2 weeks if needed'
+                'conversation_starters': 'Hello, we wanted to check how your energy service is working for you'
             }
+            
+            print(f"🔍 DEBUG: Processing {len(lines)} lines from AI response")
             
             for line in lines:
                 if ':' in line:
@@ -232,182 +254,122 @@ Use British English throughout (realise, organised, prioritise, centre, colour).
                     key = key.strip().lower().replace(' ', '_')
                     value = value.strip()
                     
+                    print(f"🔍 DEBUG: Found key='{key}', value='{value[:100]}...'")
+                    
                     # Core priority fields
                     if 'priority' in key:
                         result['priority'] = value.lower()
+                        print(f"✅ Set priority: {result['priority']}")
                     elif 'urgency' in key:
                         result['urgency'] = value.lower()
-                    elif 'risk_score' in key:
+                        print(f"✅ Set urgency: {result['urgency']}")
+                    elif 'risk_score' in key or 'risk' in key:
                         try:
-                            result['risk_score'] = int(value.split()[0])
-                        except:
+                            # Try to extract number from various formats
+                            import re
+                            numbers = re.findall(r'\d+', value)
+                            if numbers:
+                                score = int(numbers[0])
+                                # Ensure it's in valid range 1-10
+                                result['risk_score'] = max(1, min(10, score))
+                                print(f"✅ Set risk_score: {result['risk_score']} (from '{value}')")
+                            else:
+                                result['risk_score'] = 5
+                                print(f"⚠️ No number found in risk_score value '{value}', using default: 5")
+                        except Exception as e:
                             result['risk_score'] = 5
+                            print(f"⚠️ Failed to parse risk_score '{value}': {e}, using default: 5")
                     
                     # Context and reasoning
                     elif 'contact_reason' in key:
                         result['contact_reason'] = value
-                    elif 'trigger_factors' in key:
+                        print(f"✅ Set contact_reason: {value[:50]}...")
+                    elif 'trigger_factors' in key or 'trigger' in key:
                         result['trigger_factors'] = value
+                        print(f"✅ Set trigger_factors: {value[:50]}...")
                     elif 'potential_impact' in key:
                         result['potential_impact'] = value
+                        print(f"✅ Set potential_impact: {value[:50]}...")
                     
                     # Customer insights and communication
                     elif 'customer_insights' in key:
                         result['customer_insights'] = value
+                        print(f"✅ Set customer_insights: {value[:50]}...")
                     elif 'communication_style' in key:
                         result['communication_style'] = value
+                        print(f"✅ Set communication_style: {value[:50]}...")
                     elif 'conversation_starters' in key:
                         result['conversation_starters'] = value
-                    
-                    # Resolution strategies
-                    elif 'resolution_strategy' in key:
-                        result['resolution_strategy'] = value
-                    elif 'alternative_approach' in key:
-                        result['alternative_approach'] = value
-                    elif 'success_indicators' in key:
-                        result['success_indicators'] = value
-                    elif 'follow_up_timing' in key:
-                        result['follow_up_timing'] = value
+                        print(f"✅ Set conversation_starters: {value[:50]}...")
+                    else:
+                        print(f"❓ Unrecognized key: '{key}'")
             
+            # Ensure risk_score is meaningful based on priority if it's still default
+            if result['risk_score'] == 5:  # Default value
+                if result['priority'] == 'high':
+                    result['risk_score'] = 8
+                    print(f"✅ Adjusted risk_score to {result['risk_score']} based on high priority")
+                elif result['priority'] == 'low':
+                    result['risk_score'] = 3
+                    print(f"✅ Adjusted risk_score to {result['risk_score']} based on low priority")
+            
+            # Ensure trigger_factors is meaningful
+            if result['trigger_factors'] == 'Routine customer review' or not result['trigger_factors']:
+                print("⚠️ Trigger factors missing or default, generating from other fields...")
+                trigger_parts = []
+                if result['priority'] == 'high':
+                    trigger_parts.append("High priority classification")
+                if result['risk_score'] > 6:
+                    trigger_parts.append(f"Risk score: {result['risk_score']}/10")
+                if 'churn' in result.get('contact_reason', '').lower():
+                    trigger_parts.append("Churn risk detected")
+                if 'billing' in result.get('contact_reason', '').lower():
+                    trigger_parts.append("Billing concerns")
+                
+                if trigger_parts:
+                    result['trigger_factors'] = ' + '.join(trigger_parts)
+                    print(f"✅ Generated trigger_factors: {result['trigger_factors']}")
+            
+            print(f"🎯 FINAL RESULT - risk_score: {result['risk_score']}, trigger_factors: '{result['trigger_factors']}'")
             return result
             
         except Exception as e:
             print(f"Error parsing AI response: {e}")
-            return self._fallback_priority_analysis({})
-    
-    def _fallback_priority_analysis(self, customer_data):
-        """Comprehensive fallback priority analysis using all available data when AI is unavailable"""
-        # Basic metrics
-        churn_risk = customer_data.get('Churn_Risk_Score', 0)
-        engagement = customer_data.get('Engagement_Score', 50)
-        account_status = customer_data.get('Account_Status', 'Active')
-        satisfaction = customer_data.get('Satisfaction_Score', 5)
-        
-        # Interaction analysis
-        interactions = customer_data.get('interactions', [])
-        recent_complaints = [i for i in interactions if i.get('Interaction_Type') == 'Complaint']
-        negative_interactions = [i for i in interactions if i.get('Sentiment') == 'Negative']
-        unresolved_issues = [i for i in interactions if i.get('Resolution_Status') in ['Pending', 'Escalated']]
-        billing_issues = [i for i in interactions if 'billing' in i.get('Summary', '').lower()]
-        unsubscribe_requests = [i for i in interactions if i.get('Interaction_Type') == 'Unsubscribe']
-        
-        # Notification analysis
-        notifications = customer_data.get('notification_history', [])
-        unopened_rate = len([n for n in notifications if n.get('Opened') == 'No']) / len(notifications) if notifications else 0
-        
-        # Recommended actions analysis
-        actions = customer_data.get('recommended_actions', [])
-        high_urgency_actions = [a for a in actions if a.get('Urgency_Level') == 'High']
-        
-        # Determine priority based on comprehensive factors
-        trigger_factors = []
-        
-        if churn_risk > 80:
-            trigger_factors.append(f'Very high churn risk: {churn_risk}%')
-        if account_status == 'At Risk':
-            trigger_factors.append(f'Account status: {account_status}')
-        if satisfaction < 4:
-            trigger_factors.append(f'Low satisfaction score: {satisfaction}/10')
-        if len(unresolved_issues) > 0:
-            trigger_factors.append(f'{len(unresolved_issues)} unresolved issues')
-        if len(billing_issues) > 0:
-            trigger_factors.append(f'{len(billing_issues)} billing-related problems')
-        if len(unsubscribe_requests) > 0:
-            trigger_factors.append(f'{len(unsubscribe_requests)} unsubscribe requests')
-        if len(high_urgency_actions) > 0:
-            trigger_factors.append(f'{len(high_urgency_actions)} high urgency recommended actions')
-        if engagement < 30:
-            trigger_factors.append(f'Low engagement score: {engagement}')
-        if unopened_rate > 0.7:
-            trigger_factors.append(f'High unopened notification rate: {int(unopened_rate*100)}%')
-        
-        # HIGH PRIORITY CONDITIONS
-        if (churn_risk > 70 or account_status == 'At Risk' or satisfaction < 3 or 
-            len(unresolved_issues) > 1 or len(unsubscribe_requests) > 0 or len(high_urgency_actions) > 0):
-            
-            return {
-                'priority': 'high',
-                'urgency': 'immediate',
-                'risk_score': min(10, max(7, int(churn_risk/10))),
-                'contact_reason': f'Multiple critical factors identified: {", ".join(trigger_factors[:3])}. Immediate intervention required to prevent churn.',
-                'trigger_factors': '; '.join(trigger_factors),
-                'potential_impact': 'High risk of customer churn, negative reviews, and potential revenue loss. May influence other customers in same location.',
-                'customer_insights': f'Value Seekers customer showing signs of dissatisfaction. {len(negative_interactions)} negative interactions suggest frustration with service or pricing.',
-                'communication_style': 'Empathetic and solution-focused. Acknowledge specific issues and provide immediate value proposition',
-                'conversation_starters': f'We\'ve noticed some concerns with your service and want to address them immediately',
-                'resolution_strategy': f'Address specific issues: {", ".join([i.get("Summary", "") for i in unresolved_issues[:2]])}. Offer immediate resolution and retention incentives.',
-                'alternative_approach': 'If primary issues can\'t be resolved immediately, offer account credits and escalate to specialist team',
-                'success_indicators': 'Customer expresses satisfaction with resolution, agrees to continue service, reduces complaint frequency',
-                'follow_up_timing': 'Follow up within 24-48 hours to ensure resolution effectiveness and monitor satisfaction'
-            }
-        # MEDIUM PRIORITY CONDITIONS
-        elif (churn_risk > 40 or engagement < 30 or len(billing_issues) > 0 or 
-              len(recent_complaints) > 0 or unopened_rate > 0.5):
-            
+            # Return minimal structure if parsing fails
             return {
                 'priority': 'medium',
-                'urgency': 'within_week',
-                'risk_score': min(7, max(4, int(churn_risk/15) + len(negative_interactions))),
-                'contact_reason': f'Moderate risk factors identified: {", ".join(trigger_factors[:3])}. Proactive engagement needed to prevent escalation.',
-                'trigger_factors': '; '.join(trigger_factors) if trigger_factors else f'Churn risk: {churn_risk}%, Engagement: {engagement}',
-                'potential_impact': 'Customer may become disengaged and consider switching at contract renewal. Risk of negative word-of-mouth.',
-                'customer_insights': f'Value Seekers customer showing early warning signs. {len(billing_issues)} billing issues and {len(recent_complaints)} complaints suggest need for attention.',
-                'communication_style': 'Friendly and value-focused. Highlight benefits and address any concerns proactively',
-                'conversation_starters': 'We want to ensure you\'re getting the best value from your energy service and address any concerns',
-                'resolution_strategy': f'Address specific concerns: {", ".join([i.get("Summary", "") for i in (billing_issues + recent_complaints)[:2]])}. Offer value-focused solutions.',
-                'alternative_approach': 'If specific issues resolved, focus on value demonstration and loyalty building',
-                'success_indicators': 'Increased engagement, resolution of specific issues, improved satisfaction feedback',
-                'follow_up_timing': 'Monitor engagement over 2-3 weeks, follow up if metrics don\'t improve'
-            }
-        
-        # LOW PRIORITY CONDITIONS
-        else:
-            return {
-                'priority': 'low',
                 'urgency': 'routine',
-                'risk_score': max(1, min(4, int(churn_risk/20))),
-                'contact_reason': f'Stable Value Seekers customer with good metrics. Proactive relationship maintenance opportunity.',
-                'trigger_factors': f'Stable metrics: Churn risk {churn_risk}%, Engagement {engagement}, Satisfaction {satisfaction}/10',
-                'potential_impact': 'Minimal immediate risk, but opportunity to strengthen loyalty and prevent future churn',
-                'customer_insights': f'Stable Value Seekers customer (satisfaction: {satisfaction}/10) who appreciates good value and reliable service',
-                'communication_style': 'Friendly and informative. Focus on appreciation and ongoing value demonstration',
-                'conversation_starters': 'We wanted to check in and see how your energy service is working for you',
-                'resolution_strategy': 'Relationship maintenance with helpful tips, service updates, or loyalty recognition',
-                'alternative_approach': 'Seasonal check-ins or relevant energy-saving advice based on usage patterns',
-                'success_indicators': 'Positive response, continued satisfaction, stable account metrics',
-                'follow_up_timing': 'Quarterly check-ins or as needed based on account activity changes'
+                'risk_score': 5,
+                'contact_reason': 'AI analysis error - manual review needed',
+                'trigger_factors': 'AI parsing failed',
+                'potential_impact': 'Unknown impact',
+                'customer_insights': 'Manual analysis required',
+                'communication_style': 'Professional and helpful',
+                'conversation_starters': 'Hello, we wanted to check how your service is going'
             }
     
     def generate_engagement_message(self, customer_data, priority_analysis, message_type):
-        """Generate personalized engagement message"""
-        if not self.bedrock_client:
-            return self._fallback_message(customer_data, message_type)
+        """Generate personalized engagement message using AI"""
+        prompt = self._build_message_prompt(customer_data, priority_analysis, message_type)
         
-        try:
-            prompt = self._build_message_prompt(customer_data, priority_analysis, message_type)
-            
-            body = json.dumps({
-                "anthropic_version": "bedrock-2023-05-31",
-                "max_tokens": 150,
-                "messages": [
-                    {
-                        "role": "user",
-                        "content": prompt
-                    }
-                ]
-            })
-            
-            response = self.bedrock_client.invoke_model(
-                modelId=self.model_id,
-                body=body
-            )
-            
-            response_body = json.loads(response['body'].read())
-            return response_body['content'][0]['text'].strip()
-            
-        except Exception as e:
-            print(f"Message generation error: {e}")
-            return self._fallback_message(customer_data, message_type)
+        body = json.dumps({
+            "anthropic_version": "bedrock-2023-05-31",
+            "max_tokens": 200,
+            "messages": [
+                {
+                    "role": "user",
+                    "content": prompt
+                }
+            ]
+        })
+        
+        response = self.bedrock_client.invoke_model(
+            modelId=self.model_id,
+            body=body
+        )
+        
+        response_body = json.loads(response['body'].read())
+        return response_body['content'][0]['text'].strip()
     
     def _build_message_prompt(self, customer_data, priority_analysis, message_type):
         """Build enhanced prompt for message generation with detailed customer context"""
@@ -415,12 +377,33 @@ Use British English throughout (realise, organised, prioritise, centre, colour).
         first_name = customer_name.split()[0] if customer_name != 'Valued Customer' else 'Valued Customer'
         preferred_channel = customer_data.get('Preferred_Channel', 'Email')
         
-        # Get recent interaction context
+        # Get recent interaction context and proactive indicators
         interactions = customer_data.get('interactions', [])
         recent_interaction_context = ""
+        proactive_indicators = []
+        
         if interactions:
             latest = interactions[0]
             recent_interaction_context = f"Recent interaction: {latest.get('Interaction_Type', 'Unknown')} - {latest.get('Summary', 'No details')}"
+            
+            # Check for proactive opportunities
+            payment_issues = [i for i in interactions if 'payment' in i.get('Summary', '').lower() or 'billing' in i.get('Summary', '').lower()]
+            if payment_issues:
+                proactive_indicators.append("Previous payment/billing concerns - proactive support needed")
+        
+        # Check notification history for engagement patterns
+        notifications = customer_data.get('notification_history', [])
+        if notifications:
+            payment_reminders = [n for n in notifications if n.get('Notification_Type') == 'Payment Reminder']
+            if payment_reminders and any(n.get('Action_Taken') == 'Contacted support' for n in payment_reminders):
+                proactive_indicators.append("Previous payment reminder led to support contact - proactive billing assistance needed")
+        
+        # Check recommended actions for proactive opportunities
+        actions = customer_data.get('recommended_actions', [])
+        if actions:
+            energy_actions = [a for a in actions if 'energy' in a.get('Recommended_Action', '').lower()]
+            if energy_actions:
+                proactive_indicators.append("Energy-saving recommendations available - proactive cost management opportunity")
         
         # Get satisfaction and risk context
         satisfaction = customer_data.get('Satisfaction_Score', 5)
@@ -445,36 +428,36 @@ Priority Level: {priority_analysis.get('priority', 'medium')}
 Contact Reason: {priority_analysis.get('contact_reason', 'Standard engagement')}
 {recent_interaction_context}
 
-=== MESSAGE REQUIREMENTS ===
+=== PROACTIVE OPPORTUNITIES ===
+{chr(10).join(proactive_indicators) if proactive_indicators else "Standard proactive engagement opportunity"}
+
+=== PROACTIVE MESSAGE REQUIREMENTS ===
 - Use British English spelling throughout
 - Address customer as {first_name}
 - Tone: {"Empathetic and solution-focused" if priority_analysis.get('priority') == 'high' else "Friendly and value-focused" if priority_analysis.get('priority') == 'medium' else "Warm and appreciative"}
-- Focus: {"Immediate problem resolution" if churn_risk > 70 else "Value demonstration and cost savings" if message_type == 'value_opportunity' else "Re-engagement with practical benefits"}
+- Approach: PROACTIVE - reach out before problems escalate
+- Focus: {"Prevent issues and provide immediate support" if churn_risk > 70 else "Proactive value demonstration and cost management" if message_type == 'value_opportunity' else "Proactive engagement with practical benefits"}
 - Length: Under {"140 characters for SMS" if preferred_channel == "SMS" else "160 characters for email/app" if preferred_channel in ["Email", "App Push"] else "180 characters"}
 - Reference ScottishPower if company name needed
 
-=== VALUE SEEKERS APPROACH ===
-- Emphasize practical benefits and cost savings
-- Use straightforward, no-nonsense language
-- Mention specific value propositions when relevant
-- Avoid complex technical details or lengthy explanations
+=== PROACTIVE VALUE SEEKERS APPROACH ===
+- ANTICIPATE needs before customers ask (billing support, seasonal advice, cost alerts)
+- PREVENT problems rather than react to them (pre-bill assistance, usage warnings)
+- DEMONSTRATE ongoing value proactively (savings opportunities, efficiency tips)
+- SUPPORT financial concerns before they become complaints
+- Use straightforward, no-nonsense language that shows you understand their priorities
+- Mention specific cost-saving opportunities and practical benefits
+- Show that ScottishPower is looking out for their financial interests
+
+=== PROACTIVE MESSAGING EXAMPLES ===
+- "Hi {first_name}, your next bill is due soon. Based on your usage, here are some tips to keep costs down..."
+- "Hello {first_name}, we've noticed seasonal changes in your area. Here's how to manage your energy costs..."
+- "Hi {first_name}, as a valued customer, we wanted to share some cost-saving opportunities before your next billing cycle..."
 
 Generate ONLY the personalized message text, no explanations or additional content.
 """
         return prompt
     
-    def _fallback_message(self, customer_data, message_type):
-        """Fallback messages when AI unavailable"""
-        customer_name = customer_data.get('Name', 'Valued Customer')
-        first_name = customer_name.split()[0] if customer_name != 'Valued Customer' else 'Valued Customer'
-        
-        messages = {
-            'retention_focus': f"Hi {first_name}, we value your custom and want to ensure you're getting the best from your energy service.",
-            'engagement_boost': f"Hello {first_name}, we have some helpful energy tips that could benefit you.",
-            'value_opportunity': f"Hi {first_name}, discover potential savings on your energy bills with our efficiency programme!"
-        }
-        
-        return messages.get(message_type, f"Hello {first_name}, we wanted to check how your energy service is working for you.")
 
 class SmartNotificationEngine:
     def __init__(self, db_path='customer_data.db'):
@@ -658,11 +641,7 @@ class SmartNotificationEngine:
             'communication_style': priority_analysis.get('communication_style', 'Professional and helpful'),
             'conversation_starters': priority_analysis.get('conversation_starters', 'Hello, we wanted to check how your service is going'),
             
-            # Resolution Strategies
-            'resolution_strategy': priority_analysis.get('resolution_strategy', 'Standard approach'),
-            'alternative_approach': priority_analysis.get('alternative_approach', 'Follow up via preferred channel'),
-            'success_indicators': priority_analysis.get('success_indicators', 'Customer expresses satisfaction'),
-            'follow_up_timing': priority_analysis.get('follow_up_timing', 'Follow up in 1-2 weeks if needed'),
+
             
             # System metadata
             'ai_generated': True,

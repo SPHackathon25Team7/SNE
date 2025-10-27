@@ -142,19 +142,7 @@
             margin-top: 0.5rem;
         }
 
-        .quick-actions {
-            background: white;
-            padding: 1.5rem;
-            border-radius: 10px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            margin-bottom: 2rem;
-            text-align: center;
-        }
 
-        .quick-actions h3 {
-            color: #667eea;
-            margin-bottom: 1rem;
-        }
 
         .actions-row {
             display: flex;
@@ -302,85 +290,7 @@
             line-height: 1.4;
         }
 
-        /* Tab System Styles */
-        .tab-container {
-            background: white;
-            border-radius: 10px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            margin-bottom: 2rem;
-        }
 
-        .tab-nav {
-            display: flex;
-            border-bottom: 2px solid #f1f3f4;
-            background: #f8f9fa;
-            border-radius: 10px 10px 0 0;
-            overflow-x: auto;
-        }
-
-        .tab-button {
-            background: none;
-            border: none;
-            padding: 1rem 1.5rem;
-            cursor: pointer;
-            font-size: 1rem;
-            font-weight: 500;
-            color: #666;
-            transition: all 0.3s ease;
-            white-space: nowrap;
-            border-bottom: 3px solid transparent;
-        }
-
-        .tab-button:hover {
-            background: #e9ecef;
-            color: #495057;
-        }
-
-        .tab-button.active {
-            color: #667eea;
-            background: white;
-            border-bottom-color: #667eea;
-        }
-
-        .tab-content {
-            display: none;
-            padding: 2rem;
-            animation: fadeIn 0.3s ease-in;
-        }
-
-        .tab-content.active {
-            display: block;
-        }
-
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(10px);
-            }
-
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .tab-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 2rem;
-        }
-
-        .tab-section {
-            background: #f8f9fa;
-            padding: 1.5rem;
-            border-radius: 8px;
-            border-left: 4px solid #667eea;
-        }
-
-        .tab-section h4 {
-            color: #667eea;
-            margin-bottom: 1rem;
-        }
 
         .notifications-column {
             min-height: 200px;
@@ -400,133 +310,69 @@
 
 <body>
     <div class="header">
-        <h1>Smart Notification Engine</h1>
-        <p>Energy Supplier Customer Notification Dashboard</p>
+        <h2>Smart Notification Engine</h2>
+        
     </div>
 
     <div class="container">
-        <!-- Quick Actions at the top -->
-        <div class="quick-actions">
-            <h3>Smart Notification Engine</h3>
-            <div class="actions-row">
-                <button class="btn btn-success" onclick="loadCustomerData()">🔄 Refresh Data</button>
-                <button class="btn" onclick="switchTab('notifications')">📧 View Notifications</button>
-                <button class="btn" onclick="switchTab('value-seekers')">🎯 Value Seekers</button>
-            </div>
-        </div>
 
-        <!-- Tabbed Interface -->
-        <div class="tab-container">
-            <div class="tab-nav">
-                <button class="tab-button active" onclick="switchTab('notifications')">📧 Smart Notifications</button>
-                <button class="tab-button" onclick="switchTab('value-seekers')">🎯 Value Seekers</button>
-                <button class="tab-button" onclick="switchTab('overview')">📊 Customer Data</button>
+
+        <!-- Smart Notifications Section -->
+        <div style="background: white; border-radius: 10px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); padding: 2rem;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+                <h3 style="color: #28a745; margin: 0;">📧 Smart Notifications & Prioritisation</h3>
+                <button class="btn" onclick="generateNotifications()" style="background: #28a745;">🤖 Analyse &
+                    Generate Notifications</button>
             </div>
 
-            <!-- Smart Notifications Tab (Now Default) -->
-            <div id="notifications-tab" class="tab-content active">
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
-                    <h3 style="color: #28a745; margin: 0;">📧 Smart Notifications & Prioritization</h3>
-                    <button class="btn" onclick="generateNotifications()" style="background: #28a745;">🤖 Analyse &
-                        Generate Notifications</button>
+            <!-- Notification Stats -->
+            <div class="stats-grid" style="margin-bottom: 2rem;" id="notificationStats">
+                <div class="stat-card">
+                    <div class="stat-number" id="totalNotifications">0</div>
+                    <div class="stat-label">Total Notifications</div>
                 </div>
-
-                <!-- Notification Stats -->
-                <div class="stats-grid" style="margin-bottom: 2rem;" id="notificationStats">
-                    <div class="stat-card">
-                        <div class="stat-number" id="totalNotifications">0</div>
-                        <div class="stat-label">Total Notifications</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-number" id="highPriorityCount">0</div>
-                        <div class="stat-label">🔴 Critical</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-number" id="mediumPriorityCount">0</div>
-                        <div class="stat-label">🟡 Important</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-number" id="lowPriorityCount">0</div>
-                        <div class="stat-label">🟢 Routine</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-number" id="avgRiskScore">0</div>
-                        <div class="stat-label">Avg Risk Score</div>
-                    </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="highPriorityCount">0</div>
+                    <div class="stat-label">🔴 Critical</div>
                 </div>
-
-                <div
-                    style="margin-bottom: 1rem; padding: 1rem; background: #d4edda; border-radius: 8px; border-left: 4px solid #28a745;">
-                    <h4 style="color: #155724; margin-bottom: 0.5rem;">🎯 AI-Powered Value Seekers Engagement</h4>
-                    <p style="margin: 0; color: #155724; font-size: 0.9rem;">
-                        AI analyses <strong>Value Seekers customers only</strong>, identifies who needs contact, prioritises by urgency & risk, then
-                        generates personalised notifications. <strong>Most critical engagements appear first.</strong> 
-                        Focusing on your target segment saves processing time and costs.
-                    </p>
+                <div class="stat-card">
+                    <div class="stat-number" id="mediumPriorityCount">0</div>
+                    <div class="stat-label">🟡 Important</div>
                 </div>
-
-                <!-- Priority Filter Buttons -->
-                <div style="margin-bottom: 1rem; display: flex; gap: 0.5rem; flex-wrap: wrap;">
-                    <button class="btn" onclick="filterNotifications('all')" id="filter-all"
-                        style="background: #6c757d; font-size: 0.8rem;">All Notifications</button>
-                    <button class="btn" onclick="filterNotifications('high')" id="filter-high"
-                        style="background: #dc3545; font-size: 0.8rem;">🔴 Critical Only</button>
-                    <button class="btn" onclick="filterNotifications('medium')" id="filter-medium"
-                        style="background: #ffc107; color: #000; font-size: 0.8rem;">🟡 Important Only</button>
-                    <button class="btn" onclick="filterNotifications('low')" id="filter-low"
-                        style="background: #28a745; font-size: 0.8rem;">🟢 Routine Only</button>
+                <div class="stat-card">
+                    <div class="stat-number" id="lowPriorityCount">0</div>
+                    <div class="stat-label">🟢 Routine</div>
                 </div>
-
-                <div id="notificationData" class="loading">Click "Analyse & Generate Notifications" to see
-                    AI-prioritised customer engagements</div>
-            </div>
-
-            <!-- Overview Tab (Simplified) -->
-            <div id="overview-tab" class="tab-content">
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
-                    <h3 style="color: #667eea; margin: 0;">📊 Customer Data Overview</h3>
-                </div>
-
-                <!-- Key Stats -->
-                <div class="stats-grid" style="margin-bottom: 2rem;">
-                    <div class="stat-card">
-                        <div class="stat-number" id="totalCustomers">-</div>
-                        <div class="stat-label">Value Seekers</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-number" id="billingIssues">-</div>
-                        <div class="stat-label">Billing Issues</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-number" id="valueSeekers">-</div>
-                        <div class="stat-label">Active Customers</div>
-                    </div>
-                </div>
-
-                <div class="tab-grid">
-                    <div class="tab-section">
-                        <h4>Customer Segments</h4>
-                        <div id="segmentData" class="loading">Loading segments...</div>
-                    </div>
-
-                    <div class="tab-section">
-                        <h4>Billing Issues</h4>
-                        <div id="billingData" class="loading">Loading billing issues...</div>
-                    </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="avgRiskScore">0</div>
+                    <div class="stat-label">Avg Risk Score</div>
                 </div>
             </div>
 
-
-
-            <!-- Value Seekers Tab -->
-            <div id="value-seekers-tab" class="tab-content">
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
-                    <h3 style="color: #f39c12; margin: 0;">🎯 Value Seekers Focus (Target Segment)</h3>
-                    <button class="btn" onclick="generateValueSeekerNotifications()" style="background: #f39c12;">🎯
-                        Generate Value Seeker Campaigns</button>
-                </div>
-                <div id="valueSeekerData" class="loading">Loading Value Seekers analysis...</div>
+            <div
+                style="margin-bottom: 1rem; padding: 1rem; background: #d4edda; border-radius: 8px; border-left: 4px solid #28a745;">
+                <h4 style="color: #155724; margin-bottom: 0.5rem;">🎯 AI-Powered Value Seekers Engagement</h4>
+                <p style="margin: 0; color: #155724; font-size: 0.9rem;">
+                    AI analyses <strong>Value Seekers customers only</strong>, identifies who needs contact,
+                    prioritises by urgency & risk, then
+                    generates personalised notifications. <strong>Most critical engagements appear first.</strong>
+                </p>
             </div>
+
+            <!-- Priority Filter Buttons -->
+            <div style="margin-bottom: 1rem; display: flex; gap: 0.5rem; flex-wrap: wrap;">
+                <button class="btn" onclick="filterNotifications('all')" id="filter-all"
+                    style="background: #6c757d; font-size: 0.8rem;">All Notifications</button>
+                <button class="btn" onclick="filterNotifications('high')" id="filter-high"
+                    style="background: #dc3545; font-size: 0.8rem;">🔴 Critical Only</button>
+                <button class="btn" onclick="filterNotifications('medium')" id="filter-medium"
+                    style="background: #ffc107; color: #000; font-size: 0.8rem;">🟡 Important Only</button>
+                <button class="btn" onclick="filterNotifications('low')" id="filter-low"
+                    style="background: #28a745; font-size: 0.8rem;">🟢 Routine Only</button>
+            </div>
+
+            <div id="notificationData" class="loading">Click "Analyse & Generate Notifications" to see
+                AI-prioritised customer engagements</div>
         </div>
     </div>
 
@@ -541,8 +387,7 @@
             loadBillingIssues();
             loadValueSeekers();
 
-            // Set notifications as default tab
-            switchTab('notifications');
+
 
             // Set default filter
             document.getElementById('filter-all').style.opacity = '1';
@@ -670,15 +515,11 @@
                 html = `
                     <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; align-items: start;">
                         <div class="notifications-column">
-                            <h4 style="color: #667eea; margin-bottom: 1rem; text-align: centre; padding: 0.5rem; background: #f8f9fa; border-radius: 5px;">
-                                📋 Priority Notifications (1-${midPoint})
-                            </h4>
+                            
                             ${generateNotificationCards(leftColumn, 0)}
                         </div>
                         <div class="notifications-column">
-                            <h4 style="color: #667eea; margin-bottom: 1rem; text-align: centre; padding: 0.5rem; background: #f8f9fa; border-radius: 5px;">
-                                📋 Additional Notifications (${midPoint + 1}-${sortedNotifications.length})
-                            </h4>
+                            
                             ${generateNotificationCards(rightColumn, midPoint)}
                         </div>
                     </div>
@@ -712,117 +553,99 @@
                                     <span style="background: ${notification.priority === 'high' ? '#dc3545' : notification.priority === 'medium' ? '#ffc107' : '#28a745'}; color: ${notification.priority === 'medium' ? '#000' : 'white'}; padding: 0.3rem 0.7rem; border-radius: 15px; font-size: 0.75rem; font-weight: bold; margin-right: 0.5rem;">
                                         ${priorityLabel}
                                     </span>
-                                    ${notification.churn_risk ? `<span style="background: ${notification.churn_risk > 80 ? '#dc3545' : notification.churn_risk > 60 ? '#ffc107' : '#28a745'}; color: white; padding: 0.3rem 0.7rem; border-radius: 15px; font-size: 0.75rem; font-weight: bold; margin-right: 0.5rem;">Churn: ${notification.churn_risk}%</span>` : ''}
+                                    ${notification.churn_risk ? `<span style="background: ${notification.churn_risk > 80 ? '#dc3545' : notification.churn_risk > 60 ? '#ffc107' : '#28a745'}; color: white; padding: 0.3rem 0.7rem; border-radius: 15px; font-size: 0.75rem; font-weight: bold; margin-right: 0.5rem;">Churn Risk: ${notification.churn_risk}%</span>` : ''}
                                     ${notification.opted_in === 'Yes' ? '<span style="background: #28a745; color: white; padding: 0.3rem 0.7rem; border-radius: 15px; font-size: 0.75rem;">✓ Opted In</span>' : '<span style="background: #dc3545; color: white; padding: 0.3rem 0.7rem; border-radius: 15px; font-size: 0.75rem;">✗ Not Opted In</span>'}
                                 </div>
                             </div>
                             <div style="text-align: right; font-size: 0.8rem; color: #666; background: #f8f9fa; padding: 0.5rem; border-radius: 8px;">
                                 <div style="font-weight: bold; color: #333;">Rank: #${actualIndex + 1}</div>
                                 <div><strong>Via:</strong> ${notification.preferred_channel || notification.channel}</div>
-                                <div><strong>Risk:</strong> ${notification.risk_score || 'N/A'}/10</div>
+                                <div><strong>Priority:</strong> ${notification.risk_score || 'N/A'}/10</div>
                             </div>
                         </div>
                         
-                        <!-- AI Generated Message -->
+                        <!-- Editable AI Message -->
                         <div style="margin-bottom: 1rem; padding: 1rem; background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%); border-radius: 8px; border-left: 4px solid ${notification.priority === 'high' ? '#dc3545' : notification.priority === 'medium' ? '#ffc107' : '#28a745'};">
                             <div style="font-size: 0.75rem; color: #666; margin-bottom: 0.5rem; text-transform: uppercase; font-weight: bold; display: flex; align-items: center; gap: 0.5rem;">
-                                <span>🤖</span> AI Generated Message:
+                                <span>🤖</span> AI Generated Message (Editable):
                             </div>
-                            <div style="font-size: 0.95rem; font-weight: 500; color: #333; font-style: italic; line-height: 1.4;">"${notification.message}"</div>
+                            <textarea 
+                                id="message-${notification.customer_id}" 
+                                style="width: 100%; min-height: 80px; padding: 0.75rem; border: 1px solid #ddd; border-radius: 6px; font-size: 0.9rem; line-height: 1.4; resize: vertical; font-family: inherit;"
+                                placeholder="Edit the AI-generated message before sending..."
+                            >${notification.message}</textarea>
+                            <div style="margin-top: 0.5rem; font-size: 0.75rem; color: #666;">
+                                💡 Tip: Edit this message to personalise it further before sending to the customer
+                            </div>
                         </div>
                         
-                        <!-- Customer Service Insights Section -->
+                        <!-- Collapsible Customer Service Insights Section -->
                         <div style="background: #fff3cd; border: 1px solid #ffeaa7; border-radius: 8px; padding: 1rem; margin-bottom: 1rem;">
-                            <h5 style="color: #856404; margin: 0 0 0.75rem 0; font-size: 0.9rem; font-weight: bold; display: flex; align-items: center; gap: 0.5rem;">
-                                <span>🎯</span> Customer Service Insights
-                            </h5>
+                            <div style="cursor: pointer; display: flex; align-items: center; justify-content: space-between;" onclick="toggleSection('cs-insights-${notification.customer_id}')">
+                                <h5 style="color: #856404; margin: 0; font-size: 0.9rem; font-weight: bold; display: flex; align-items: center; gap: 0.5rem;">
+                                    <span>🎯</span> Customer Service Insights
+                                </h5>
+                                <span id="toggle-cs-insights-${notification.customer_id}" style="color: #856404; font-size: 1.2rem; font-weight: bold;">▶</span>
+                            </div>
                             
-                            <!-- Why Contact -->
-                            ${notification.contact_reason ? `
-                            <div style="margin-bottom: 0.75rem; padding: 0.75rem; background: white; border-radius: 6px; border-left: 3px solid #f39c12;">
-                                <div style="font-size: 0.8rem; font-weight: bold; color: #f39c12; margin-bottom: 0.5rem;">📋 WHY CONTACT THIS CUSTOMER:</div>
-                                <div style="font-size: 0.85rem; color: #333; line-height: 1.4;">${notification.contact_reason}</div>
-                            </div>` : ''}
-                            
-                            <!-- Trigger Factors -->
-                            ${notification.trigger_factors ? `
-                            <div style="margin-bottom: 0.75rem; padding: 0.75rem; background: white; border-radius: 6px; border-left: 3px solid #17a2b8;">
-                                <div style="font-size: 0.8rem; font-weight: bold; color: #17a2b8; margin-bottom: 0.5rem;">⚡ TRIGGER FACTORS:</div>
-                                <div style="font-size: 0.85rem; color: #333;">${notification.trigger_factors}</div>
-                            </div>` : ''}
-                            
-                            <!-- Potential Impact -->
-                            ${notification.potential_impact ? `
-                            <div style="margin-bottom: 0.75rem; padding: 0.75rem; background: white; border-radius: 6px; border-left: 3px solid #dc3545;">
-                                <div style="font-size: 0.8rem; font-weight: bold; color: #dc3545; margin-bottom: 0.5rem;">⚠️ POTENTIAL IMPACT IF NOT CONTACTED:</div>
-                                <div style="font-size: 0.85rem; color: #333; line-height: 1.4;">${notification.potential_impact}</div>
-                            </div>` : ''}
+                            <div id="cs-insights-${notification.customer_id}" style="margin-top: 0.75rem; display: none;">
+                                <!-- Why Contact -->
+                                ${notification.contact_reason ? `
+                                <div style="margin-bottom: 0.75rem; padding: 0.75rem; background: white; border-radius: 6px; border-left: 3px solid #f39c12;">
+                                    <div style="font-size: 0.8rem; font-weight: bold; color: #f39c12; margin-bottom: 0.5rem;">📋 WHY CONTACT THIS CUSTOMER:</div>
+                                    <div style="font-size: 0.85rem; color: #333; line-height: 1.4;">${notification.contact_reason}</div>
+                                </div>` : ''}
+                                
+                                <!-- Trigger Factors -->
+                                ${notification.trigger_factors ? `
+                                <div style="margin-bottom: 0.75rem; padding: 0.75rem; background: white; border-radius: 6px; border-left: 3px solid #17a2b8;">
+                                    <div style="font-size: 0.8rem; font-weight: bold; color: #17a2b8; margin-bottom: 0.5rem;">⚡ TRIGGER FACTORS:</div>
+                                    <div style="font-size: 0.85rem; color: #333;">${notification.trigger_factors}</div>
+                                </div>` : ''}
+                                
+                                <!-- Potential Impact -->
+                                ${notification.potential_impact ? `
+                                <div style="margin-bottom: 0.75rem; padding: 0.75rem; background: white; border-radius: 6px; border-left: 3px solid #dc3545;">
+                                    <div style="font-size: 0.8rem; font-weight: bold; color: #dc3545; margin-bottom: 0.5rem;">⚠️ POTENTIAL IMPACT IF NOT CONTACTED:</div>
+                                    <div style="font-size: 0.85rem; color: #333; line-height: 1.4;">${notification.potential_impact}</div>
+                                </div>` : ''}
+                            </div>
                         </div>
                         
-                        <!-- Communication Strategy Section -->
+                        <!-- Collapsible Communication Strategy Section -->
                         <div style="background: #d4edda; border: 1px solid #c3e6cb; border-radius: 8px; padding: 1rem; margin-bottom: 1rem;">
-                            <h5 style="color: #155724; margin: 0 0 0.75rem 0; font-size: 0.9rem; font-weight: bold; display: flex; align-items: center; gap: 0.5rem;">
-                                <span>💬</span> Communication Strategy for CS Agents
-                            </h5>
+                            <div style="cursor: pointer; display: flex; align-items: center; justify-content: space-between;" onclick="toggleSection('comm-strategy-${notification.customer_id}')">
+                                <h5 style="color: #155724; margin: 0; font-size: 0.9rem; font-weight: bold; display: flex; align-items: center; gap: 0.5rem;">
+                                    <span>💬</span> Communication Strategy for CS Agents
+                                </h5>
+                                <span id="toggle-comm-strategy-${notification.customer_id}" style="color: #155724; font-size: 1.2rem; font-weight: bold;">▶</span>
+                            </div>
                             
-                            <!-- Customer Insights -->
-                            ${notification.customer_insights ? `
-                            <div style="margin-bottom: 0.75rem; padding: 0.75rem; background: white; border-radius: 6px; border-left: 3px solid #28a745;">
-                                <div style="font-size: 0.8rem; font-weight: bold; color: #28a745; margin-bottom: 0.5rem;">👤 CUSTOMER PERSONALITY & INSIGHTS:</div>
-                                <div style="font-size: 0.85rem; color: #333; line-height: 1.4;">${notification.customer_insights}</div>
-                            </div>` : ''}
-                            
-                            <!-- Communication Style -->
-                            ${notification.communication_style ? `
-                            <div style="margin-bottom: 0.75rem; padding: 0.75rem; background: white; border-radius: 6px; border-left: 3px solid #6f42c1;">
-                                <div style="font-size: 0.8rem; font-weight: bold; color: #6f42c1; margin-bottom: 0.5rem;">🗣️ RECOMMENDED COMMUNICATION STYLE:</div>
-                                <div style="font-size: 0.85rem; color: #333;">${notification.communication_style}</div>
-                            </div>` : ''}
-                            
-                            <!-- Conversation Starters -->
-                            ${notification.conversation_starters ? `
-                            <div style="margin-bottom: 0.75rem; padding: 0.75rem; background: white; border-radius: 6px; border-left: 3px solid #20c997;">
-                                <div style="font-size: 0.8rem; font-weight: bold; color: #20c997; margin-bottom: 0.5rem;">💡 CONVERSATION STARTERS:</div>
-                                <div style="font-size: 0.85rem; color: #333; font-style: italic; line-height: 1.4;">"${notification.conversation_starters}"</div>
-                            </div>` : ''}
-                            
-
+                            <div id="comm-strategy-${notification.customer_id}" style="margin-top: 0.75rem; display: none;">
+                                <!-- Customer Insights -->
+                                ${notification.customer_insights ? `
+                                <div style="margin-bottom: 0.75rem; padding: 0.75rem; background: white; border-radius: 6px; border-left: 3px solid #28a745;">
+                                    <div style="font-size: 0.8rem; font-weight: bold; color: #28a745; margin-bottom: 0.5rem;">👤 CUSTOMER PERSONALITY & INSIGHTS:</div>
+                                    <div style="font-size: 0.85rem; color: #333; line-height: 1.4;">${notification.customer_insights}</div>
+                                </div>` : ''}
+                                
+                                <!-- Communication Style -->
+                                ${notification.communication_style ? `
+                                <div style="margin-bottom: 0.75rem; padding: 0.75rem; background: white; border-radius: 6px; border-left: 3px solid #6f42c1;">
+                                    <div style="font-size: 0.8rem; font-weight: bold; color: #6f42c1; margin-bottom: 0.5rem;">🗣️ RECOMMENDED COMMUNICATION STYLE:</div>
+                                    <div style="font-size: 0.85rem; color: #333;">${notification.communication_style}</div>
+                                </div>` : ''}
+                                
+                                <!-- Conversation Starters -->
+                                ${notification.conversation_starters ? `
+                                <div style="margin-bottom: 0.75rem; padding: 0.75rem; background: white; border-radius: 6px; border-left: 3px solid #20c997;">
+                                    <div style="font-size: 0.8rem; font-weight: bold; color: #20c997; margin-bottom: 0.5rem;">💡 CONVERSATION STARTERS:</div>
+                                    <div style="font-size: 0.85rem; color: #333; font-style: italic; line-height: 1.4;">"${notification.conversation_starters}"</div>
+                                </div>` : ''}
+                            </div>
                         </div>
                         
-                        <!-- Resolution Strategy Section -->
-                        <div style="background: #e2e3f0; border: 1px solid #d1d3e2; border-radius: 8px; padding: 1rem; margin-bottom: 1rem;">
-                            <h5 style="color: #5a5c69; margin: 0 0 0.75rem 0; font-size: 0.9rem; font-weight: bold; display: flex; align-items: center; gap: 0.5rem;">
-                                <span>🛠️</span> Resolution Strategies
-                            </h5>
-                            
-                            <!-- Primary Strategy -->
-                            ${notification.resolution_strategy ? `
-                            <div style="margin-bottom: 0.75rem; padding: 0.75rem; background: white; border-radius: 6px; border-left: 3px solid #667eea;">
-                                <div style="font-size: 0.8rem; font-weight: bold; color: #667eea; margin-bottom: 0.5rem;">🎯 PRIMARY STRATEGY:</div>
-                                <div style="font-size: 0.85rem; color: #333; line-height: 1.4;">${notification.resolution_strategy}</div>
-                            </div>` : ''}
-                            
-                            <!-- Alternative Approach -->
-                            ${notification.alternative_approach ? `
-                            <div style="margin-bottom: 0.75rem; padding: 0.75rem; background: white; border-radius: 6px; border-left: 3px solid #6c757d;">
-                                <div style="font-size: 0.8rem; font-weight: bold; color: #6c757d; margin-bottom: 0.5rem;">🔄 ALTERNATIVE APPROACH:</div>
-                                <div style="font-size: 0.85rem; color: #333; line-height: 1.4;">${notification.alternative_approach}</div>
-                            </div>` : ''}
-                            
-                            <!-- Success Indicators -->
-                            ${notification.success_indicators ? `
-                            <div style="margin-bottom: 0.75rem; padding: 0.75rem; background: white; border-radius: 6px; border-left: 3px solid #28a745;">
-                                <div style="font-size: 0.8rem; font-weight: bold; color: #28a745; margin-bottom: 0.5rem;">✅ SUCCESS INDICATORS:</div>
-                                <div style="font-size: 0.85rem; color: #333; line-height: 1.4;">${notification.success_indicators}</div>
-                            </div>` : ''}
-                            
-                            <!-- Follow-up Timing -->
-                            ${notification.follow_up_timing ? `
-                            <div style="margin-bottom: 0.75rem; padding: 0.75rem; background: white; border-radius: 6px; border-left: 3px solid #ffc107;">
-                                <div style="font-size: 0.8rem; font-weight: bold; color: #e0a800; margin-bottom: 0.5rem;">📅 FOLLOW-UP TIMING:</div>
-                                <div style="font-size: 0.85rem; color: #333; line-height: 1.4;">${notification.follow_up_timing}</div>
-                            </div>` : ''}
-                        </div>
+
                         
                         <!-- Action Buttons -->
                         <div style="display: flex; justify-content: space-between; align-items: center; padding-top: 1rem; border-top: 2px solid #f8f9fa;">
@@ -835,7 +658,7 @@
                                     👤 View Details
                                 </button>
                                 <button class="btn" style="padding: 0.5rem 1rem; font-size: 0.85rem; font-weight: bold;" 
-                                        onclick="sendNotification(${notification.customer_id}, '${notification.message.replace(/'/g, "\\'")}', '${notification.channel}')">
+                                        onclick="sendEditedNotification(${notification.customer_id}, '${notification.channel}')">
                                     📤 Send Notification
                                 </button>
                             </div>
@@ -884,16 +707,19 @@
             updateNotificationStats(filteredNotifications);
         }
 
-        async function generateValueSeekerNotifications() {
-            // Switch to notifications tab and generate notifications focused on Value Seekers
-            switchTab('notifications');
-            setTimeout(() => {
-                generateNotifications();
-            }, 300);
-        }
 
-        async function sendNotification(customerId, message, channel) {
+
+        async function sendEditedNotification(customerId, channel) {
             try {
+                // Get the edited message from the text area
+                const messageTextarea = document.getElementById(`message-${customerId}`);
+                const editedMessage = messageTextarea.value.trim();
+
+                if (!editedMessage) {
+                    alert('❌ Please enter a message before sending');
+                    return;
+                }
+
                 const response = await fetch('/api/send-notification', {
                     method: 'POST',
                     headers: {
@@ -901,23 +727,37 @@
                     },
                     body: JSON.stringify({
                         customer_id: customerId,
-                        message: message,
+                        message: editedMessage,
                         channel: channel
                     })
                 });
 
                 const result = await response.json();
-                alert(`✅ Notification sent to customer ${customerId} via ${channel}\n\nNext steps:\n1. Monitor customer response\n2. Follow up as recommended\n3. Update customer record`);
+
+                // Show success message with the actual sent message
+                alert(`✅ Notification sent to customer ${customerId} via ${channel}\n\nMessage sent:\n"${editedMessage}"\n\nNext steps:\n1. Monitor customer response\n2. Follow up as recommended\n3. Update customer record`);
+
+                // Optionally disable the button to prevent double-sending
+                const sendButton = event.target;
+                sendButton.style.opacity = '0.6';
+                sendButton.textContent = '✅ Sent';
+                sendButton.disabled = true;
+
             } catch (error) {
                 alert('❌ Error sending notification');
                 console.error('Error:', error);
             }
         }
 
+        // Keep the old function for backward compatibility
+        async function sendNotification(customerId, message, channel) {
+            return sendEditedNotification(customerId, channel);
+        }
+
         function viewCustomerDetails(customerId) {
             // Find the customer in the notifications data
             const notification = allNotifications.find(n => n.customer_id === customerId);
-            
+
             if (notification) {
                 const details = `
 CUSTOMER PROFILE SUMMARY
@@ -940,15 +780,9 @@ CONVERSATION STARTERS
 ====================
 ${notification.conversation_starters || 'Standard greeting'}
 
-RESOLUTION STRATEGY
-==================
-${notification.resolution_strategy || 'Standard approach'}
 
-SUCCESS INDICATORS
-==================
-${notification.success_indicators || 'Customer satisfaction'}
                 `;
-                
+
                 alert(details);
             } else {
                 alert('Customer details not found');
@@ -1104,7 +938,7 @@ ${notification.success_indicators || 'Customer satisfaction'}
 
                 let html = `
                     <div style="margin-bottom: 1rem; padding: 1rem; background: #e8f4fd; border-radius: 8px; border-left: 4px solid #667eea;">
-                        <h4 style="color: #667eea; margin-bottom: 0.5rem;">🎯 AI Prioritization Results</h4>
+                        <h4 style="color: #667eea; margin-bottom: 0.5rem;">🎯 AI Prioritisation Results</h4>
                         <p style="color: #495057; margin: 0;">AI has analyzed ${analyses.length} customers and ranked them by priority, urgency, and churn risk.</p>
                     </div>
                     
@@ -1159,40 +993,7 @@ ${notification.success_indicators || 'Customer satisfaction'}
             }
         }
 
-        // Tab switching functionality
-        function switchTab(tabName) {
-            // Hide all tab contents
-            const tabContents = document.querySelectorAll('.tab-content');
-            tabContents.forEach(content => {
-                content.classList.remove('active');
-            });
 
-            // Remove active class from all tab buttons
-            const tabButtons = document.querySelectorAll('.tab-button');
-            tabButtons.forEach(button => {
-                button.classList.remove('active');
-            });
-
-            // Show selected tab content
-            const selectedTab = document.getElementById(tabName + '-tab');
-            if (selectedTab) {
-                selectedTab.classList.add('active');
-            }
-
-            // Add active class to clicked button
-            const clickedButton = event ? event.target : document.querySelector(`[onclick="switchTab('${tabName}')"]`);
-            if (clickedButton) {
-                clickedButton.classList.add('active');
-            }
-
-            // Load data for specific tabs if needed
-            if (tabName === 'value-seekers') {
-                // Refresh Value Seekers data if needed
-                if (document.getElementById('valueSeekerData').innerHTML.includes('Loading')) {
-                    loadValueSeekers();
-                }
-            }
-        }
 
         async function loadCharts() {
             try {
@@ -1370,6 +1171,20 @@ ${notification.success_indicators || 'Customer satisfaction'}
                     }
                 }
             });
+        }
+
+        // Toggle collapsible sections
+        function toggleSection(sectionId) {
+            const section = document.getElementById(sectionId);
+            const toggleIcon = document.getElementById('toggle-' + sectionId);
+
+            if (section.style.display === 'none') {
+                section.style.display = 'block';
+                toggleIcon.textContent = '▼';
+            } else {
+                section.style.display = 'none';
+                toggleIcon.textContent = '▶';
+            }
         }
     </script>
 </body>

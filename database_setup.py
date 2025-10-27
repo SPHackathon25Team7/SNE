@@ -252,6 +252,8 @@ Based on this data, classify as ONE segment only. Consider:
 - DIGITAL NATIVES: App usage, high engagement, tech-savvy behaviour  
 - ECO SAVERS: Green subscription, environmental concerns, efficiency focus
 
+Place a bigger emphasis on Value Seekers and pick more of them where possible.
+
 Respond with ONLY the segment name: VALUE SEEKERS, TRADITIONALISTS, DIGITAL NATIVES, or ECO SAVERS
 """
         
