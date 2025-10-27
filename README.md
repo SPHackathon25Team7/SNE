@@ -10,11 +10,13 @@ A Flask-based web application that analyses energy supplier customer data from m
 
 ## Features
 
-- **AI-Powered Customer Segmentation**: Uses AWS Bedrock to classify customers into segments (Value Seekers, Traditionalists, Digital Natives, Eco Savers)
-- **Multi-Table Data Analysis**: Integrates data from 5 different sources for comprehensive customer profiles
-- **Value Seekers Focus**: Optimised for your target customer segment to save processing costs
-- **Smart Notifications**: AI-generated, personalised notifications in British English
-- **Interactive Dashboard**: Clean, tabbed interface with priority-based notification display
+- **AI-Powered Customer Analysis**: Uses AWS Bedrock to analyze customer behavior and generate priority recommendations
+- **Multi-Table Data Integration**: Combines data from 5 different sources for comprehensive customer profiles
+- **Value Seekers Focus**: Optimized for your target customer segment to save processing costs
+- **Smart Notifications**: AI-generated, personalized notifications with editable messages in British English
+- **Streamlined Dashboard**: Clean, single-page interface with collapsible sections for better focus
+- **Risk-Based Prioritization**: AI assigns risk scores (1-10) and priority levels for targeted engagement
+- **Trigger Factor Analysis**: AI identifies specific data points that warrant customer contact
 - **SQLite Database**: Efficient local database with proper relationships and indexing
 
 ## Database Structure
@@ -63,54 +65,97 @@ python app.py
 
 ## AI-Powered Features
 
-### Customer Classification
-- Analyses customer behaviour across all data sources
-- Uses AWS Bedrock (Claude 3 Sonnet) for intelligent segmentation
-- Fallback rule-based classification when AI unavailable
+### Customer Priority Analysis
+- Analyzes customer behavior across all data sources using AWS Bedrock (Claude 3 Sonnet)
+- Assigns priority levels (High/Medium/Low) and urgency ratings
+- Generates risk scores (1-10 scale) for targeted intervention
+- Identifies specific trigger factors from customer data
 
-### Smart Notifications
-- AI-generated messages in British English
+### Smart Notifications with Editable Messages
+- AI-generated messages in British English that agents can edit before sending
 - Never invents names, dates, or contact details
-- Personalised based on complete customer profile
+- Personalized based on complete customer profile
 - Priority-based ordering (Critical → Important → Routine)
 
+### Comprehensive Customer Insights
+- **Contact Reason**: Why this customer needs attention
+- **Trigger Factors**: Specific data points that led to the recommendation
+- **Potential Impact**: What happens if customer isn't contacted
+- **Customer Insights**: Personality traits and communication preferences
+- **Communication Style**: Recommended tone and approach
+- **Conversation Starters**: Opening lines for customer service agents
+
 ### Value Seekers Focus
-- Only processes Value Seekers customers
+- Only processes Value Seekers customers (your target segment)
 - Saves ~75% on AI processing costs
-- Targeted insights for your priority segment
+- Targeted insights for maximum ROI
 
 ## API Endpoints
 
-- `GET /api/customers` - Value Seekers customer data
-- `GET /api/segments` - Value Seekers segment statistics
-- `GET /api/notifications` - AI-generated priority notifications
+- `GET /api/customers` - Value Seekers customer data with comprehensive profiles
+- `GET /api/segments` - Value Seekers segment statistics and breakdowns
+- `GET /api/notifications` - AI-generated priority notifications with risk scores
 - `GET /api/billing-issues` - Customers with billing-related interactions
-- `GET /api/customer-analysis` - AI priority analysis
-- `POST /api/refresh-data` - Reload database data
+- `GET /api/value-seekers` - Detailed Value Seekers analysis and insights
+- `POST /api/send-notification` - Send edited notification to customer
+- `POST /api/refresh-data` - Reload database data (if implemented)
 
 ## Dashboard Features
 
-### Smart Notifications Tab (Default)
-- AI-prioritised customer engagements
-- Two-column layout for better viewing
-- Priority filtering (Critical/Important/Routine)
-- Risk scores and contact strategies
+### Streamlined Single-Page Interface
+- **Clean Design**: Removed tabs and extra buttons for focused workflow
+- **AI-Prioritized Customer Engagements**: Most critical customers appear first
+- **Two-Column Layout**: Better viewing of multiple notifications
+- **Priority Filtering**: Filter by Critical/Important/Routine notifications
+- **Risk Scores**: Visual risk indicators (1-10 scale) for each customer
 
-### Value Seekers Tab
-- Dedicated insights for target segment
-- Key metrics and behaviour patterns
-- Solar/EV ownership analysis
+### Collapsible Information Sections
+- **Customer Service Insights**: Expandable section with contact reason, trigger factors, and potential impact
+- **Communication Strategy**: Collapsible guidance with customer insights, communication style, and conversation starters
+- **Default Collapsed**: Sections start collapsed for cleaner interface, expand on demand
 
-### Customer Data Tab
-- Simplified overview of customer base
-- Segment statistics and billing issues
+### Editable AI Messages
+- **Text Area**: AI-generated messages appear in editable text boxes
+- **Personalization**: Agents can modify messages before sending
+- **Validation**: System ensures messages aren't empty before sending
+- **Confirmation**: Shows exactly what message was sent to customer
 
-## Cost Optimisation
+### Real-Time Statistics
+- **Total Notifications**: Count of generated notifications
+- **Priority Breakdown**: Critical/Important/Routine counts
+- **Average Risk Score**: Overall risk level across customers
+- **Dynamic Updates**: Stats update as notifications are generated
 
-- **Focused Processing**: Only analyses Value Seekers (~25% of customers)
+## User Workflow
+
+### Step 1: Generate Notifications
+1. Click "🤖 Analyse & Generate Notifications" button
+2. AI analyzes all Value Seekers customers and identifies who needs contact
+3. System generates prioritized list with risk scores and detailed insights
+
+### Step 2: Review & Filter
+1. View notification statistics (Total, Critical, Important, Routine)
+2. Use priority filter buttons to focus on specific urgency levels
+3. Scan customer list ordered by priority and risk score
+
+### Step 3: Expand Details (Optional)
+1. Click "🎯 Customer Service Insights" to see why AI flagged this customer
+2. Click "💬 Communication Strategy" for guidance on how to approach them
+3. Review trigger factors, potential impact, and conversation starters
+
+### Step 4: Edit & Send
+1. Review AI-generated message in editable text area
+2. Personalize message with specific details or adjustments
+3. Click "📤 Send Notification" to deliver customized message
+4. Receive confirmation of exactly what was sent
+
+## Cost Optimization
+
+- **Focused Processing**: Only analyzes Value Seekers (~25% of customers)
 - **Efficient AI Usage**: ~£0.50-1.00 per 1000 notifications
 - **Smart Caching**: Database-driven with minimal API calls
 - **Fallback Systems**: Works without AI when needed
+- **Targeted Engagement**: Higher ROI by focusing on priority segment
 
 ## British English Compliance
 
